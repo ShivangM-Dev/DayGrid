@@ -1,0 +1,182 @@
+# DayGrid - Codebase Context
+
+## Project Overview
+DayGrid is a task management application with intelligent scheduling and priority management. The codebase has been refactored to include a public landing page and authenticated dashboard.
+
+## Architecture
+
+### Technology Stack
+- **Framework**: Next.js 16.1.1 with App Router
+- **Language**: TypeScript 5
+- **Styling**: Tailwind CSS 4
+- **UI Components**: shadcn/ui (Radix UI based)
+- **State Management**: Zustand + React Context
+- **Animations**: GSAP for landing page
+- **Backend**: Supabase (with mock fallback for development)
+- **Package Manager**: pnpm
+
+### Project Structure
+```
+src/
+├── app/                     # Next.js App Router pages
+│   ├── page.tsx            # Public landing page (black/silver theme)
+│   ├── dashboard/page.tsx    # Authenticated dashboard
+│   ├── auth/               # Authentication pages
+│   │   ├── login/page.tsx  # Login form
+│   │   └── signup/page.tsx # Signup form
+│   ├── layout.tsx          # Root layout with providers
+│   └── globals.css         # Global styles
+├── components/
+│   ├── ui/                 # shadcn/ui base components
+│   ├── navigation/          # Navigation components
+│   │   ├── public-navigation.tsx    # Landing page navigation
+│   │   └── dashboard-navigation.tsx # Authenticated navigation
+│   ├── features/           # Feature-specific components
+│   │   ├── task-inbox/     # Task management UI
+│   │   ├── daily-grid/     # Time scheduling grid
+│   │   ├── day-management/ # Day state controls
+│   │   └── animations/     # UI animations
+│   └── animations/         # Landing page animations (GSAP)
+├── hooks/                  # Custom React hooks
+│   ├── use-auth.ts         # Authentication logic
+│   ├── use-tasks.ts        # Task CRUD operations
+│   ├── use-day-state.ts    # Day management logic
+│   └── use-drag-and-drop.ts # DnD functionality
+├── lib/                    # Utility libraries
+│   ├── supabase/           # Supabase client configuration
+│   ├── utils.ts            # General utilities
+│   ├── validations/        # Form validation schemas
+│   └── animations/        # GSAP utilities
+├── store/                  # Zustand stores
+│   ├── task-store.ts        # Persistent task storage
+│   └── day-store.ts        # Day state persistence
+└── types/                  # TypeScript definitions
+    ├── index.ts            # Barrel exports
+    ├── task.ts             # Task interfaces
+    ├── day.ts              # Day interfaces
+    ├── user.ts             # User interfaces
+    ├── api.ts              # API interfaces
+    └── database.ts         # Database schemas
+```
+
+## Core Features
+
+### Landing Page (/)
+- Black and silver theme inspired by eden.so
+- Hero section with animated text
+- Features showcase (6 core features)
+- How it works section
+- Testimonials
+- Responsive navigation
+- GSAP animations for enhanced UX
+
+### Authentication
+- Mock authentication for development
+- Real Supabase integration (configure with .env.local)
+- Protected routes via middleware/proxy
+- Login/signup forms with validation
+
+### Dashboard (/dashboard)
+- Task creation and management
+- 24-hour scheduling grid
+- Priority system (1-10 scale)
+- Task types (6 categories)
+- Day states (Planning → Active → Completed)
+- Drag and drop functionality
+- Analytics and statistics
+
+## Business Logic
+
+### Task System
+- **Priority Rules**: Only ONE task can have high priority (7-10)
+- **Task Types**: regular, meeting, class, appointment, deadline, commitment
+- **Scheduling**: 24-hour grid with business hours enforcement (6:00-22:00)
+- **Day States**: Planning (flexible), Active (locked), Completed (view-only)
+
+### Security Features
+- Immutable logging for task changes
+- Anomaly detection
+- Anti-cheating mechanisms
+- Comprehensive audit trails
+
+## Configuration
+
+### Environment Variables (.env.local)
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+DATABASE_URL=your_database_connection_string
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+```
+
+### Route Protection
+- **Public Routes**: /, /auth/login, /auth/signup, /auth/forgot-password, /terms, /privacy
+- **Protected Routes**: /dashboard, /dashboard/* (require authentication)
+- **Middleware**: Located in src/proxy.ts
+
+## Development Setup
+
+### Scripts
+```bash
+pnpm dev        # Start development server
+pnpm build      # Build for production
+pnpm start      # Start production server
+pnpm lint       # Run ESLint
+```
+
+### Key Components to Know
+
+#### Landing Page Animations
+- `AnimatedText`: Fade in text animation
+- `AnimatedCard`: Scale and fade card animation
+- `FadeInOnScroll`: Scroll-triggered animations
+- `FloatingElement`: Subtle floating animation
+- `GradientShift`: Animated gradient backgrounds
+
+#### Authentication
+- `useAuth`: Hook for auth state and operations
+- Login/signup forms with password visibility toggle
+- Automatic redirect after successful auth
+
+#### Dashboard Features
+- Task inbox for unscheduled tasks
+- Daily grid with drag-and-drop scheduling
+- Day status and management controls
+- Real-time statistics and analytics
+
+## Database Schema (Supabase)
+- **users**: User profiles and preferences
+- **tasks**: Task data with scheduling
+- **days**: Day states and progress tracking
+- **task_logs**: Immutable change tracking
+
+## Notes for Development
+1. Mock auth works out of the box for development
+2. Configure real Supabase credentials for production
+3. All components are responsive and mobile-first
+4. GSAP animations are optimized for performance
+5. State persistence uses localStorage for development
+6. Security logging is comprehensive and immutable
+
+## Recent Changes
+- Added public landing page with premium animations and black/silver theme
+- Implemented authentication flow with Supabase integration
+- Created route protection middleware/proxy
+- Moved dashboard to protected /dashboard route
+- Added navigation components for public/auth states
+- Removed testimonials section for cleaner design
+- Created waitlist page with application form (/waitlist)
+- Hidden direct signup/signin from main navigation
+- Made admin access discreet (bottom of navigation)
+- Enhanced waitlist with success state and validation
+- Updated hero CTA buttons to point to waitlist instead of signup
+- Updated trust indicators to reflect waitlist benefits (limited spots, early access, priority support)
+- Maintained all premium animations and styling throughout
+
+## Current Application State
+- **Public Landing**: Premium black/silver theme with waitlist focus
+- **Waitlist Flow**: Application form → Success confirmation → Priority access
+- **Admin Access**: Discreet "Admin" link in navigation (for testing)
+- **Protected Routes**: Dashboard and auth pages behind middleware
+- **No Testimonials**: Cleaner, more focused landing page
+- **Premium Animations**: GSAP-powered interactions and effects throughout
