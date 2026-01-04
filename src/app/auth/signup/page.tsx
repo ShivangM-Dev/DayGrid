@@ -3,10 +3,10 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Button } from '@/components/shared/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/shared/ui/card'
+import { Input } from '@/components/shared/ui/input'
+import { Label } from '@/components/shared/ui/label'
 import { Target, Eye, EyeOff, Mail, Lock, User } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
 
@@ -54,8 +54,8 @@ export default function SignupPage() {
     <div className="min-h-screen bg-black flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900"></div>
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-r from-gray-600 to-transparent rounded-full opacity-10 blur-3xl"></div>
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-l from-gray-500 to-transparent rounded-full opacity-10 blur-3xl"></div>
+        <div className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-r from-gray-300 to-transparent rounded-full opacity-25 blur-3xl"></div>
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-l from-gray-200 to-transparent rounded-full opacity-25 blur-3xl"></div>
       </div>
       
       <div className="relative z-10 w-full max-w-md">

@@ -5,7 +5,7 @@ import { AuthProvider } from "@/context/auth-context";
 import { TaskProvider } from "@/context/task-context";
 import { DayProvider } from "@/context/day-context";
 import { AnimationProvider } from "@/context/animation-context";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/shared/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

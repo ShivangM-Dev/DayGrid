@@ -1,19 +1,19 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { TaskForm } from '@/components/features/task-inbox/task-form'
-import { TaskCard } from '@/components/features/task-inbox/task-card'
-import { DailyGrid } from '@/components/features/daily-grid/daily-grid'
-import { DayStatusComponent } from '@/components/features/day-management/day-status'
-import { StartDayButton } from '@/components/features/day-management/start-day-button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/shared/ui/card'
+import { Button } from '@/components/shared/ui/button'
+import { TaskForm } from '@/components/main-application/task-inbox/task-form'
+import { TaskCard } from '@/components/main-application/task-inbox/task-card'
+import { DailyGrid } from '@/components/main-application/daily-grid/daily-grid'
+import { DayStatusComponent } from '@/components/main-application/day-management/day-status'
+import { StartDayButton } from '@/components/main-application/day-management/start-day-button'
 import { useTasks } from '@/hooks/use-tasks'
 import { useDayState } from '@/hooks/use-day-state'
 import { useAuth } from '@/hooks/use-auth'
 import { format, startOfDay } from 'date-fns'
 import { Calendar, Clock, Target, Plus } from 'lucide-react'
-import { DashboardNavigation } from '@/components/navigation/dashboard-navigation'
+import { DashboardNavigation } from '@/components/shared/navigation/dashboard-navigation'
 
 export default function Dashboard() {
   const { tasks, getUnscheduledTasks, getScheduledTasks } = useTasks()
@@ -44,7 +44,7 @@ export default function Dashboard() {
       <DashboardNavigation currentPage="dashboard" />
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
           {/* Left Column - Task Management */}

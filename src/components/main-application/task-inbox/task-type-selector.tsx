@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/shared/ui/card'
 import { TaskType } from '@/types'
 import { Calendar, Clock, AlertCircle, Target } from 'lucide-react'
 import { cn } from '@/lib/utils'

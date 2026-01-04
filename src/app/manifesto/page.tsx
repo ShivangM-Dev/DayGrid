@@ -1,10 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { PublicNavigation } from '@/components/navigation/public-navigation'
+import { Button } from '@/components/shared/ui/button'
+import { PublicNavigation } from '@/components/shared/navigation/public-navigation'
 import { ArrowLeft, ArrowRight, Target, Sparkles, Quote, Star } from 'lucide-react'
-import { AnimatedText, FadeInOnScroll, FloatingElement, GradientShift, RevealOnScroll, SubtlePulse } from '@/components/animations/landing-animations'
+import { AnimatedText, FadeInOnScroll, FloatingElement, GradientShift, RevealOnScroll, SubtlePulse } from '@/components/shared/animations/landing-animations'
 
 export default function ManifestoPage() {
   return (
@@ -17,22 +17,22 @@ export default function ManifestoPage() {
       <div className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* Enhanced Background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        {/* Animated gradient orbs */}
+        {/* Enhanced Animated gradient orbs - Increased Brightness */}
         <FloatingElement duration={20} amplitude={30}>
-          <div className="absolute -top-20 -left-20 w-[800px] h-[800px] bg-gradient-to-br from-gray-700 via-gray-600 to-transparent rounded-full opacity-8 blur-3xl"></div>
+          <div className="absolute -top-20 -left-20 w-[800px] h-[800px] bg-gradient-to-br from-gray-300 via-gray-400 to-transparent rounded-full opacity-20 blur-3xl"></div>
         </FloatingElement>
         <FloatingElement duration={25} amplitude={20}>
-          <div className="absolute top-40 -right-32 w-[900px] h-[900px] bg-gradient-to-bl from-gray-600 via-gray-500 to-transparent rounded-full opacity-6 blur-3xl" style={{animationDelay: '5s'}}></div>
+          <div className="absolute top-40 -right-32 w-[900px] h-[900px] bg-gradient-to-bl from-gray-200 via-gray-300 to-transparent rounded-full opacity-18 blur-3xl" style={{animationDelay: '5s'}}></div>
         </FloatingElement>
         <FloatingElement duration={18} amplitude={25}>
-          <div className="absolute -bottom-32 left-1/3 w-[700px] h-[700px] bg-gradient-to-tr from-gray-700 via-transparent to-gray-600 rounded-full opacity-7 blur-3xl" style={{animationDelay: '10s'}}></div>
+          <div className="absolute -bottom-32 left-1/3 w-[700px] h-[700px] bg-gradient-to-tr from-gray-400 via-transparent to-gray-300 rounded-full opacity-22 blur-3xl" style={{animationDelay: '10s'}}></div>
         </FloatingElement>
         
-        {/* Subtle floating particles */}
-        <div className="absolute top-1/4 left-16 w-1 h-1 bg-gray-400 rounded-full opacity-30 animate-pulse" style={{animationDuration: '3s'}}></div>
-        <div className="absolute top-1/3 right-24 w-0.5 h-0.5 bg-gray-300 rounded-full opacity-25 animate-pulse" style={{animationDuration: '4s', animationDelay: '1s'}}></div>
-        <div className="absolute top-2/3 left-1/4 w-1 h-1 bg-gray-400 rounded-full opacity-30 animate-pulse" style={{animationDuration: '3.5s', animationDelay: '2s'}}></div>
-        <div className="absolute bottom-1/4 right-1/3 w-0.5 h-0.5 bg-gray-300 rounded-full opacity-20 animate-pulse" style={{animationDuration: '5s', animationDelay: '3s'}}></div>
+        {/* Enhanced floating particles - Increased Brightness */}
+        <div className="absolute top-1/4 left-16 w-1 h-1 bg-gray-200 rounded-full opacity-50 animate-pulse" style={{animationDuration: '3s'}}></div>
+        <div className="absolute top-1/3 right-24 w-0.5 h-0.5 bg-gray-100 rounded-full opacity-45 animate-pulse" style={{animationDuration: '4s', animationDelay: '1s'}}></div>
+        <div className="absolute top-2/3 left-1/4 w-1 h-1 bg-gray-200 rounded-full opacity-50 animate-pulse" style={{animationDuration: '3.5s', animationDelay: '2s'}}></div>
+        <div className="absolute bottom-1/4 right-1/3 w-0.5 h-0.5 bg-gray-100 rounded-full opacity-40 animate-pulse" style={{animationDuration: '5s', animationDelay: '3s'}}></div>
         
         {/* Enhanced grid lines */}
         <div className="absolute inset-0 opacity-2">
@@ -74,27 +74,27 @@ export default function ManifestoPage() {
                 </AnimatedText>
               </GradientShift>
               
-              <AnimatedText delay={0.4}>
-                <h1 className="text-6xl md:text-8xl font-light mb-8 leading-none tracking-tight">
-                  <span className="bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
-                    The DayGrid
-                  </span>
-                  <br />
-                  <span className="bg-gradient-to-r from-gray-200 via-gray-300 to-gray-400 bg-clip-text text-transparent font-extralight">
-                    Manifesto
-                  </span>
-                </h1>
-              </AnimatedText>
+               <AnimatedText delay={0.4}>
+                 <h1 className="text-6xl md:text-8xl font-light mb-8 leading-none tracking-tight">
+                   <span className="bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
+                     The DayGrid
+                   </span>
+                   <br />
+                   <span className="bg-gradient-to-r from-gray-200 via-gray-300 to-gray-400 bg-clip-text text-transparent font-extralight">
+                     Manifesto
+                   </span>
+                 </h1>
+               </AnimatedText>
               
-              <AnimatedText delay={0.6}>
-                <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed font-light">
-                  We believe in the power of 
-                  <span className="text-gray-200 font-normal"> intentional design</span> and the beauty of 
-                  <span className="text-gray-200 font-normal"> focused execution</span>. 
-                  <br className="hidden md:block" />
-                  This is our <span className="text-gray-200 font-normal">sacred promise</span> to you.
-                </p>
-              </AnimatedText>
+               <AnimatedText delay={0.6}>
+                 <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed font-light">
+                   We believe in the power of 
+                   <span className="text-gray-200 font-normal"> intentional design</span> and the beauty of 
+                   <span className="text-gray-200 font-normal"> focused execution</span>. 
+                   <br className="hidden md:block" />
+                   This is our <span className="text-gray-200 font-normal">sacred promise</span> to you.
+                 </p>
+               </AnimatedText>
             </div>
 
             {/* Enhanced Manifesto Points */}
@@ -105,11 +105,11 @@ export default function ManifestoPage() {
                   <div className="border-l-2 border-gray-700 pl-12 hover:border-gray-600 transition-all duration-500">
                     <div className="flex items-start space-x-4 mb-6">
                       <Star className="w-6 h-6 text-gray-400 mt-1 flex-shrink-0 group-hover:text-gray-300 transition-colors duration-300" />
-                      <h2 className="text-3xl md:text-4xl font-light text-white tracking-wide">Clarity Over Complexity</h2>
-                    </div>
-                    <p className="text-lg md:text-xl text-gray-300 leading-relaxed font-light">
-                      In a world of endless notifications and competing priorities, we choose <span className="text-gray-100 font-normal">simplicity</span>. Every feature in DayGrid exists to bring clarity to your day, not add to the noise. We strip away the unnecessary so you can focus on what <span className="text-gray-100 font-normal">truly matters</span>.
-                    </p>
+                       <h2 className="text-3xl md:text-4xl font-light text-white tracking-wide">Clarity Over Complexity</h2>
+                     </div>
+                     <p className="text-lg md:text-xl text-gray-300 leading-relaxed font-light">
+                       In a world of endless notifications and competing priorities, we choose <span className="text-gray-100 font-normal">simplicity</span>. Every feature in DayGrid exists to bring clarity to your day, not add to the noise. We strip away the unnecessary so you can focus on what <span className="text-gray-100 font-normal">truly matters</span>.
+                     </p>
                   </div>
                 </div>
               </RevealOnScroll>
@@ -120,11 +120,11 @@ export default function ManifestoPage() {
                   <div className="border-l-2 border-gray-700 pl-12 hover:border-gray-600 transition-all duration-500">
                     <div className="flex items-start space-x-4 mb-6">
                       <Target className="w-6 h-6 text-gray-400 mt-1 flex-shrink-0 group-hover:text-gray-300 transition-colors duration-300" />
-                      <h2 className="text-3xl md:text-4xl font-light text-white tracking-wide">Precision Planning Meets Flexible Execution</h2>
-                    </div>
-                    <p className="text-lg md:text-xl text-gray-300 leading-relaxed font-light">
-                      Structure should <span className="text-gray-100 font-normal">serve you</span>, not constrain you. DayGrid provides the framework for intentional planning while maintaining the flexibility needed in a dynamic world. Plan with <span className="text-gray-100 font-normal">precision</span>, execute with confidence, adapt when needed.
-                    </p>
+                       <h2 className="text-3xl md:text-4xl font-light text-white tracking-wide">Precision Planning Meets Flexible Execution</h2>
+                     </div>
+                     <p className="text-lg md:text-xl text-gray-300 leading-relaxed font-light">
+                       Structure should <span className="text-gray-100 font-normal">serve you</span>, not constrain you. DayGrid provides the framework for intentional planning while maintaining the flexibility needed in a dynamic world. Plan with <span className="text-gray-100 font-normal">precision</span>, execute with confidence, adapt when needed.
+                     </p>
                   </div>
                 </div>
               </RevealOnScroll>
@@ -135,11 +135,11 @@ export default function ManifestoPage() {
                   <div className="border-l-2 border-gray-700 pl-12 hover:border-gray-600 transition-all duration-500">
                     <div className="flex items-start space-x-4 mb-6">
                       <Sparkles className="w-6 h-6 text-gray-400 mt-1 flex-shrink-0 group-hover:text-gray-300 transition-colors duration-300" />
-                      <h2 className="text-3xl md:text-4xl font-light text-white tracking-wide">Excellence in Every Interaction</h2>
-                    </div>
-                    <p className="text-lg md:text-xl text-gray-300 leading-relaxed font-light">
-                      We <span className="text-gray-100 font-normal">obsess over the details</span> because you shouldn't have to. From the way animations feel to the precision of our scheduling algorithms, every pixel and every interaction is crafted to serve your <span className="text-gray-100 font-normal">productivity journey</span>.
-                    </p>
+                       <h2 className="text-3xl md:text-4xl font-light text-white tracking-wide">Excellence in Every Interaction</h2>
+                     </div>
+                     <p className="text-lg md:text-xl text-gray-300 leading-relaxed font-light">
+                       We <span className="text-gray-100 font-normal">obsess over the details</span> because you shouldn't have to. From the way animations feel to the precision of our scheduling algorithms, every pixel and every interaction is crafted to serve your <span className="text-gray-100 font-normal">productivity journey</span>.
+                     </p>
                   </div>
                 </div>
               </RevealOnScroll>
@@ -150,11 +150,11 @@ export default function ManifestoPage() {
                   <div className="border-l-2 border-gray-700 pl-12 hover:border-gray-600 transition-all duration-500">
                     <div className="flex items-start space-x-4 mb-6">
                       <Quote className="w-6 h-6 text-gray-400 mt-1 flex-shrink-0 group-hover:text-gray-300 transition-colors duration-300" />
-                      <h2 className="text-3xl md:text-4xl font-light text-white tracking-wide">Your Time, Your Rules</h2>
-                    </div>
-                    <p className="text-lg md:text-xl text-gray-300 leading-relaxed font-light">
-                      Productivity tools should <span className="text-gray-100 font-normal">adapt to your rhythm</span>, not force you into theirs. DayGrid respects your unique workflow, supporting rather than dictating how you should manage your most <span className="text-gray-100 font-normal">valuable resource</span>: your attention.
-                    </p>
+                       <h2 className="text-3xl md:text-4xl font-light text-white tracking-wide">Your Time, Your Rules</h2>
+                     </div>
+                     <p className="text-lg md:text-xl text-gray-300 leading-relaxed font-light">
+                       Productivity tools should <span className="text-gray-100 font-normal">adapt to your rhythm</span>, not force you into theirs. DayGrid respects your unique workflow, supporting rather than dictating how you should manage your most <span className="text-gray-100 font-normal">valuable resource</span>: your attention.
+                     </p>
                   </div>
                 </div>
               </RevealOnScroll>
@@ -165,11 +165,11 @@ export default function ManifestoPage() {
                   <div className="border-l-2 border-gray-700 pl-12 hover:border-gray-600 transition-all duration-500">
                     <div className="flex items-start space-x-4 mb-6">
                       <Star className="w-6 h-6 text-gray-400 mt-1 flex-shrink-0 group-hover:text-gray-300 transition-colors duration-300" />
-                      <h2 className="text-3xl md:text-4xl font-light text-white tracking-wide">Sustainable Achievement</h2>
-                    </div>
-                    <p className="text-lg md:text-xl text-gray-300 leading-relaxed font-light">
-                      True productivity isn't about <span className="text-gray-100 font-normal">doing more</span>—it's about achieving what matters most, consistently. DayGrid is designed for the <span className="text-gray-100 font-normal">long game</span>, helping you build sustainable habits that lead to meaningful progress over time.
-                    </p>
+                       <h2 className="text-3xl md:text-4xl font-light text-white tracking-wide">Sustainable Achievement</h2>
+                     </div>
+                     <p className="text-lg md:text-xl text-gray-300 leading-relaxed font-light">
+                       True productivity isn't about <span className="text-gray-100 font-normal">doing more</span>—it's about achieving what matters most, consistently. DayGrid is designed for the <span className="text-gray-100 font-normal">long game</span>, helping you build sustainable habits that lead to meaningful progress over time.
+                     </p>
                   </div>
                 </div>
               </RevealOnScroll>

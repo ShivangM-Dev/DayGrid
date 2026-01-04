@@ -576,7 +576,7 @@ const validateStateTransition = (task, action): boolean => {
 'use client'
 
 import React from 'react'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/shared/ui/card'
 
 export function NewFeatureComponent() {
   return (

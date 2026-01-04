@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/shared/ui/button'
 import { Target, Menu, X, Settings, User, LogOut, Home, Calendar } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
 
@@ -12,14 +12,28 @@ interface DashboardNavigationProps {
 
 export function DashboardNavigation({ currentPage = 'dashboard' }: DashboardNavigationProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   const { user, logout } = useAuth()
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const handleLogout = () => {
     logout()
   }
 
   return (
-    <nav className="bg-white shadow-sm border-b">
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
+      isScrolled 
+        ? 'bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-200' 
+        : 'bg-transparent border-transparent shadow-none'
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}

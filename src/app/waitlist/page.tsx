@@ -2,89 +2,66 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Target, ArrowRight, CheckCircle, Users, Clock, Shield } from 'lucide-react'
-import { PublicNavigation } from '@/components/navigation/public-navigation'
+import { Button } from '@/components/shared/ui/button'
+import { ChevronRight, CheckCircle, Sparkles } from 'lucide-react'
 import { 
   AnimatedText, 
-  AnimatedCard, 
-  FloatingElement,
-  FadeInOnScroll
-} from '@/components/animations/landing-animations'
+  FloatingElement
+} from '@/components/shared/animations/landing-animations'
+import { WaitlistForm } from '@/components/main-application/waitlist/waitlist-form'
+import { BackgroundEffects } from '@/components/public-side/layout/background-effects'
 
 export default function WaitlistPage() {
-  const [email, setEmail] = useState('')
-  const [name, setName] = useState('')
-  const [company, setCompany] = useState('')
-  const [reason, setReason] = useState('')
   const [isSubmitted, setIsSubmitted] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    
+  const handleFormSubmit = async (_data: unknown) => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000))
-    
     setIsSubmitted(true)
-    setIsLoading(false)
+    return Promise.resolve()
   }
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-black text-white">
-        <PublicNavigation />
-        
-        <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-2xl mx-auto text-center">
-            <FloatingElement duration={2} amplitude={3}>
-              <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-8">
-                <CheckCircle className="w-10 h-10 text-white" />
+      <div className="min-h-screen bg-black text-white relative overflow-hidden">
+        <BackgroundEffects />
+
+        <section className="min-h-screen flex items-center justify-center px-6 lg:px-8 relative">
+          <div className="max-w-md w-full text-center relative z-10">
+            <FloatingElement duration={4} amplitude={6}>
+              <div className="relative mx-auto w-20 h-20 mb-6">
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl opacity-20 blur-xl"></div>
+                <div className="relative bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl w-20 h-20 flex items-center justify-center">
+                  <CheckCircle className="w-10 h-10 text-white" />
+                </div>
               </div>
             </FloatingElement>
             
-            <AnimatedText delay={0.2}>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-green-400 to-green-600 bg-clip-text text-transparent">
-                You're on the List!
+            <AnimatedText delay={0.3}>
+              <h1 className="text-5xl md:text-6xl font-light mb-6 leading-none tracking-tight">
+                <span className="bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
+                  You&apos;re
+                </span>
+                <br />
+                <span className="bg-gradient-to-r from-gray-200 via-gray-300 to-gray-500 bg-clip-text text-transparent font-extralight">
+                  In
+                </span>
               </h1>
             </AnimatedText>
             
-            <AnimatedText delay={0.4}>
-              <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-                Thanks for your interest in DayGrid. We'll notify you as soon as early access is available.
+            <AnimatedText delay={0.5}>
+              <p className="text-lg md:text-xl text-gray-400 mb-8 leading-relaxed font-light">
+                Welcome to <span className="text-gray-200 font-light">DayGrid</span>. 
+                We&apos;ll notify you when early access is available.
               </p>
             </AnimatedText>
             
-            <AnimatedText delay={0.6}>
-              <div className="bg-gray-900/50 border border-gray-700/50 rounded-2xl p-8 backdrop-blur-sm">
-                <p className="text-gray-200 mb-4">
-                  <strong>What's next?</strong>
-                </p>
-                <div className="space-y-2 text-gray-300 text-left max-w-md mx-auto">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-400" />
-                    <span>You'll receive an email confirmation shortly</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-400" />
-                    <span>Priority access based on application order</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-400" />
-                    <span>Exclusive updates and beta features</span>
-                  </div>
-                </div>
-              </div>
-            </AnimatedText>
-            
-            <AnimatedText delay={0.8}>
+            <AnimatedText delay={0.7}>
               <Link href="/">
-                <Button variant="outline" className="border-gray-600 text-gray-200 hover:bg-gray-800/50 hover:text-white hover:border-gray-500 text-lg px-8 py-3 mt-8">
-                  Back to Home
+                <Button 
+                  className="bg-gradient-to-r from-white to-gray-100 hover:from-gray-100 hover:to-gray-200 text-black font-light tracking-wide rounded-2xl py-3 px-8 transition-all duration-300"
+                >
+                  Return Home
                 </Button>
               </Link>
             </AnimatedText>
@@ -95,140 +72,53 @@ export default function WaitlistPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <PublicNavigation />
-      
-      {/* Hero Section */}
-      <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        {/* Background Effects */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-gray-600 to-transparent rounded-full opacity-20 blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-l from-gray-500 to-transparent rounded-full opacity-15 blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
-        </div>
-        
-        <div className="max-w-4xl mx-auto relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <AnimatedText delay={0.2}>
-                <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
-                  Get Early Access
-                  <br />
-                  to DayGrid
-                </h1>
-              </AnimatedText>
-              
-              <AnimatedText delay={0.4}>
-                <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-                  Be the first to experience the future of daily task management. Join our exclusive waitlist for priority access.
-                </p>
-              </AnimatedText>
-              
-              <FadeInOnScroll>
-                <div className="space-y-6 mb-8">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-gray-200 to-gray-400 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <Users className="w-6 h-6 text-black" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-white">Limited Spots</h3>
-                      <p className="text-gray-400">Only 100 early access spots available</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-gray-200 to-gray-400 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <Clock className="w-6 h-6 text-black" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-white">Priority Access</h3>
-                      <p className="text-gray-400">First come, first served</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-gray-200 to-gray-400 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <Shield className="w-6 h-6 text-black" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-white">Beta Features</h3>
-                      <p className="text-gray-400">Access to cutting-edge features</p>
-                    </div>
-                  </div>
-                </div>
-              </FadeInOnScroll>
+    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      <BackgroundEffects />
+
+      <section className="min-h-screen flex items-center justify-center px-6 lg:px-8 relative">
+        <div className="max-w-md w-full text-center relative z-10">
+          <AnimatedText delay={0.3}>
+            <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-gray-900/40 to-gray-800/20 backdrop-blur-2xl rounded-full text-sm text-gray-300 mb-8 border border-gray-800/50 shadow-2xl">
+              <Sparkles className="w-4 h-4 mr-3 text-gray-200" style={{animationDuration: '4s'}} />
+              <span className="font-light tracking-wide">Early Access</span>
+              <span className="mx-3 text-gray-600">•</span>
+              <span className="text-gray-400">Limited Spots</span>
             </div>
-            
-            <AnimatedCard delay={0.3}>
-              <Card className="bg-gradient-to-br from-gray-900/60 to-gray-800/40 border border-gray-700/50 backdrop-blur-sm">
-                <CardHeader className="space-y-1">
-                  <CardTitle className="text-center text-2xl text-white">Apply Now</CardTitle>
-                </CardHeader>
-                <CardContent className="p-8">
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="name" className="text-gray-300 font-medium">Full Name</Label>
-                      <Input
-                        id="name"
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="bg-gray-800/50 border-gray-700/50 text-white placeholder-gray-500 focus:border-gray-500 backdrop-blur-sm"
-                        placeholder="John Doe"
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="email" className="text-gray-300 font-medium">Email Address</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="bg-gray-800/50 border-gray-700/50 text-white placeholder-gray-500 focus:border-gray-500 backdrop-blur-sm"
-                        placeholder="john@example.com"
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="company" className="text-gray-300 font-medium">Company (Optional)</Label>
-                      <Input
-                        id="company"
-                        type="text"
-                        value={company}
-                        onChange={(e) => setCompany(e.target.value)}
-                        className="bg-gray-800/50 border-gray-700/50 text-white placeholder-gray-500 focus:border-gray-500 backdrop-blur-sm"
-                        placeholder="Acme Corp"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="reason" className="text-gray-300 font-medium">Why DayGrid?</Label>
-                      <textarea
-                        id="reason"
-                        value={reason}
-                        onChange={(e) => setReason(e.target.value)}
-                        rows={4}
-                        className="w-full bg-gray-800/50 border-gray-700/50 text-white placeholder-gray-500 focus:border-gray-500 backdrop-blur-sm rounded-md p-3 resize-none"
-                        placeholder="Tell us why you're interested in DayGrid..."
-                        required
-                      />
-                    </div>
-
-                    <Button
-                      type="submit"
-                      disabled={isLoading}
-                      className="w-full bg-gradient-to-r from-gray-200 to-gray-400 text-black hover:from-gray-300 hover:to-gray-500 text-lg px-6 py-4 shadow-2xl hover:shadow-gray-400/30 transition-all duration-300 font-semibold"
-                    >
-                      {isLoading ? 'Submitting...' : 'Join Waitlist'}
-                      <ArrowRight className="ml-2 w-5 h-5" />
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-            </AnimatedCard>
-          </div>
+          </AnimatedText>
+          
+          <AnimatedText delay={0.5}>
+            <h1 className="text-5xl md:text-6xl font-light mb-6 leading-none tracking-tight">
+              <span className="bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
+                Get Early
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-gray-200 via-gray-300 to-gray-500 bg-clip-text text-transparent font-extralight">
+                Access
+              </span>
+            </h1>
+          </AnimatedText>
+          
+          <AnimatedText delay={0.7}>
+            <p className="text-lg md:text-xl text-gray-400 mb-8 leading-relaxed font-light">
+              Be among <span className="text-gray-200 font-light">first</span> to experience 
+              <span className="text-gray-100 font-light">future</span> of productivity.
+            </p>
+          </AnimatedText>
+          
+          <AnimatedText delay={0.9}>
+            <div className="space-y-6">
+              <WaitlistForm onSubmit={handleFormSubmit} />
+              
+              <div className="text-center">
+                <Link 
+                  href="/"
+                  className="text-gray-500 hover:text-gray-300 text-sm font-light transition-colors duration-300"
+                >
+                  Back to Home
+                </Link>
+              </div>
+            </div>
+          </AnimatedText>
         </div>
       </section>
     </div>

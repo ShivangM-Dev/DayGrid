@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader } from '@/components/shared/ui/card'
+import { Button } from '@/components/shared/ui/button'
 import { Task, TaskType } from '@/types'
 import { useTask, useDay } from '@/hooks'
 import { Clock, Calendar, AlertCircle, CheckCircle, XCircle, Ban } from 'lucide-react'
@@ -156,7 +156,7 @@ export function TaskCard({ task, onEdit, onDelete, className }: TaskCardProps) {
                 size="sm"
                 variant="outline"
                 onClick={handleComplete}
-                className="h-7 px-2 text-xs"
+                className="h-7 px-2 text-xs border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:text-white hover:border-gray-500"
               >
                 Complete
               </Button>
@@ -164,7 +164,7 @@ export function TaskCard({ task, onEdit, onDelete, className }: TaskCardProps) {
                 size="sm"
                 variant="outline"
                 onClick={handleFail}
-                className="h-7 px-2 text-xs text-red-600 hover:text-red-700"
+                className="h-7 px-2 text-xs border-gray-600 text-gray-400 hover:bg-gray-800/50 hover:text-gray-200 hover:border-gray-500"
               >
                 Fail
               </Button>
@@ -172,7 +172,7 @@ export function TaskCard({ task, onEdit, onDelete, className }: TaskCardProps) {
                 size="sm"
                 variant="outline"
                 onClick={handleAbandon}
-                className="h-7 px-2 text-xs text-gray-600 hover:text-gray-700"
+                className="h-7 px-2 text-xs border-gray-600 text-gray-400 hover:bg-gray-800/50 hover:text-gray-200 hover:border-gray-500"
               >
                 Abandon
               </Button>

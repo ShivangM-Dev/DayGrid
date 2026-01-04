@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/shared/ui/dialog'
+import { Button } from '@/components/shared/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/shared/ui/card'
+import { Slider } from '@/components/shared/ui/slider'
 import { Task, TaskType } from '@/types'
 import { useTask } from '@/hooks'
-import { Slider } from '@/components/ui/slider'
 import { Plus, Calendar, Clock, AlertCircle, Target } from 'lucide-react'
 
 const taskTypeOptions = [

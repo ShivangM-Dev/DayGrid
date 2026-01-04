@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/shared/ui/button'
+import { Card, CardContent } from '@/components/shared/ui/card'
 import { useDay } from '@/hooks'
 import { Play, Lock, AlertTriangle } from 'lucide-react'
 

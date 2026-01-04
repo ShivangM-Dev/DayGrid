@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Slider } from '@/components/ui/slider'
+import { Slider } from '@/components/shared/ui/slider'
 import { cn } from '@/lib/utils'
 
 interface PrioritySliderProps {

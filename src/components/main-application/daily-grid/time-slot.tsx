@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useRef, useEffect } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/shared/ui/card'
 import { Task } from '@/types'
 import { useTask, useDay, useAnimation } from '@/hooks'
 import { cn } from '@/lib/utils'
