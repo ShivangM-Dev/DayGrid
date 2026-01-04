@@ -1,4 +1,4 @@
-import { createTaskLog, validateTaskTransition, detectAnomalousPattern, verifyTaskLogIntegrity } from '@/lib/security/crypto'
+import { createTaskLog, validateTaskTransition, detectAnomalousPattern, verifyTaskLogIntegrity } from '@/backend/security/crypto'
 import { Task, TaskLog, DayState } from '@/types'
 import { useDayState } from '@/hooks/use-day-state'
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Task, TaskLog } from '@/types'
-import { immutableLogger } from '@/lib/security/immutable-logger'
+import { immutableLogger } from '@/backend/security/immutable-logger'
 
 export function useSecurityMonitoring() {
   const [isMonitoring, setIsMonitoring] = useState(true)

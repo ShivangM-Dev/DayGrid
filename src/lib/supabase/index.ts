@@ -1,3 +1,3 @@
 export * from './client'
-export * from './server'
+export * from '../../../backend/server/supabase/server'
 export * from './types'

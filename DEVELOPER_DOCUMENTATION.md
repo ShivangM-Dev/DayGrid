@@ -30,13 +30,16 @@ DayGrid is a robust daily time and task management system built with modern web 
 - **Security**: Immutable logging and anti-cheating mechanisms
 
 ### Technology Stack
-- **Frontend**: Next.js 14, TypeScript, Tailwind CSS
-- **UI Components**: shadcn/ui
-- **Animations**: GSAP (GreenSock)
+- **Frontend**: Next.js 16.1.1, TypeScript 5, Tailwind CSS 4
+- **UI Components**: shadcn/ui (Radix UI based)
+- **Animations**: GSAP (GreenSock) with React 19 integration
 - **State Management**: React Context + Zustand
-- **Drag & Drop**: @dnd-kit
+- **Drag & Drop**: @dnd-kit core + sortable + utilities
 - **Backend**: Supabase (PostgreSQL + Real-time + Auth)
-- **Validation**: Zod schemas
+- **Form Handling**: React Hook Form + Zod schemas
+- **Date Handling**: date-fns library
+- **Notifications**: Sonner toast system
+- **Icons**: Lucide React
 
 ---
 
@@ -48,29 +51,68 @@ DayGrid is a robust daily time and task management system built with modern web 
 src/
 ├── app/                    # Next.js App Router pages
 │   ├── layout.tsx          # Root layout with providers
-│   ├── page.tsx            # Main dashboard
-│   ├── globals.css           # Global styles
+│   ├── page.tsx            # Premium public landing page
+│   ├── dashboard/page.tsx  # Authenticated dashboard
+│   ├── waitlist/page.tsx   # Waitlist application form
+│   ├── manifesto/page.tsx  # Product vision page
 │   ├── auth/               # Authentication pages
-│   ├── dashboard/           # Main app pages
-│   └── api/                # API routes (future)
+│   │   ├── login/page.tsx  # Login form
+│   │   └── signup/page.tsx # Signup form
+│   └── globals.css         # Global styles
 ├── components/             # React components
-│   ├── ui/                # shadcn/ui base components
-│   ├── layout/            # Layout components
-│   └── features/          # Feature-specific components
-│       ├── task-inbox/     # Task management UI
-│       ├── daily-grid/     # Time scheduling grid
-│       ├── day-management/  # Day state controls
-│       └── animations/     # Animation components
+│   ├── main-application/   # Dashboard application components
+│   │   ├── task-inbox/     # Task creation and management
+│   │   ├── daily-grid/     # 24-hour scheduling with d&d
+│   │   ├── day-management/ # Day state controls
+│   │   ├── animations/     # Dashboard animations
+│   │   └── waitlist/       # Waitlist form
+│   ├── public-side/        # Landing page components
+│   │   ├── hero/           # Hero section with animations
+│   │   ├── features/       # Feature showcase
+│   │   ├── how-it-works/   # Process explanation
+│   │   ├── cta/            # Call-to-action sections
+│   │   ├── footer/         # Footer component
+│   │   └── layout/         # Background effects
+│   └── shared/             # Shared application components
+│       ├── navigation/     # Public and dashboard nav
+│       ├── ui/             # shadcn/ui base components
+│       └── animations/     # Shared animation utilities
 ├── context/               # React Context providers
+│   ├── task-context.tsx    # Task state management
+│   ├── day-context.tsx     # Day state management
+│   ├── auth-context.tsx    # Authentication context
+│   └── animation-context.tsx # GSAP animation context
 ├── hooks/                 # Custom React hooks
+│   ├── use-auth.ts         # Authentication logic
+│   ├── use-tasks.ts        # Task CRUD operations
+│   ├── use-day-state.ts    # Day management logic
+│   ├── use-drag-and-drop.ts # DnD functionality
+│   ├── use-gsap-animation.ts # Animation utilities
+│   ├── use-local-storage.ts # Storage management
+│   └── use-security-monitoring.ts # Security logging
 ├── lib/                   # Utility libraries
-│   ├── validations/        # Form validation schemas
+│   ├── validations/        # Zod form validation schemas
 │   ├── animations/         # GSAP utilities
-│   ├── security/           # Security & logging
-│   └── supabase/          # Database client
+│   ├── security/           # Security, crypto, logging
+│   ├── supabase/          # Database client and types
+│   └── utils.ts            # General utilities
 ├── store/                 # Zustand stores
+│   ├── task-store.ts       # Persistent task storage
+│   └── day-store.ts        # Day state persistence
 ├── types/                 # TypeScript definitions
+│   ├── index.ts            # Barrel exports
+│   ├── task.ts             # Task interfaces and enums
+│   ├── day.ts              # Day state interfaces
+│   ├── user.ts             # User interfaces
+│   ├── api.ts              # API interfaces
+│   ├── database.ts         # Database schemas
+│   └── public-side.ts      # Landing page types
 └── public/                # Static assets
+    ├── file.svg
+    ├── globe.svg
+    ├── next.svg
+    ├── vercel.svg
+    └── window.svg
 ```
 
 ### Data Flow
@@ -87,9 +129,10 @@ Immutable Logger ← State Changes → Security Validation
 ## 🛠️ Getting Started
 
 ### Prerequisites
-- Node.js 18+
+- Node.js 18+ (recommended 20+)
 - pnpm package manager
 - Modern browser with ES6+ support
+- Git for version control
 
 ### Installation
 
@@ -101,12 +144,18 @@ cd daygrid
 # Install dependencies
 pnpm install
 
-# Set up environment
+# Set up environment (optional for development - works with mock data)
 cp .env.example .env.local
-# Fill in your Supabase credentials
+# Fill in your Supabase credentials for production
 
-# Start development
+# Start development server
 pnpm dev
+
+# Build for production
+pnpm build
+
+# Run linting
+pnpm lint
 ```
 
 ### Environment Variables
@@ -572,7 +621,7 @@ const validateStateTransition = (task, action): boolean => {
 
 #### 1. Create Component
 ```typescript
-// src/components/features/new-feature/component.tsx
+// src/components/main-application/new-feature/component.tsx
 'use client'
 
 import React from 'react'
@@ -604,21 +653,32 @@ export interface NewFeatureType {
 // src/hooks/use-new-feature.ts
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { NewFeatureType } from '@/types'
 
 export function useNewFeature() {
   const [data, setData] = useState<NewFeatureType[]>([])
   
-  // Hook logic
+  const addItem = useCallback((item: Omit<NewFeatureType, 'id' | 'createdAt'>) => {
+    const newItem: NewFeatureType = {
+      ...item,
+      id: crypto.randomUUID(),
+      createdAt: new Date()
+    }
+    setData(prev => [...prev, newItem])
+  }, [])
   
-  return { data, setData }
+  const removeItem = useCallback((id: string) => {
+    setData(prev => prev.filter(item => item.id !== id))
+  }, [])
+  
+  return { data, addItem, removeItem, setData }
 }
 ```
 
 #### 4. Update Index Files
 ```typescript
-// src/components/features/new-feature/index.ts
+// src/components/main-application/new-feature/index.ts
 export { NewFeatureComponent } from './component'
 
 // src/hooks/index.ts
@@ -631,7 +691,7 @@ export { useNewFeature } from './use-new-feature'
 ```typescript
 // __tests__/components/NewFeatureComponent.test.tsx
 import { render, screen } from '@testing-library/react'
-import { NewFeatureComponent } from '@/components/features/new-feature'
+import { NewFeatureComponent } from '@/components/main-application/new-feature'
 
 describe('NewFeatureComponent', () => {
   it('renders correctly', () => {
@@ -695,13 +755,13 @@ describe('useNewFeature', () => {
 #### Build Errors
 ```bash
 # TypeScript compilation issues
-pnpm build --profile  # Detailed build info
-
-# Type checking only
-pnpm type-check
+pnpm build
 
 # Lint issues
 pnpm lint
+
+# Development debugging
+pnpm dev
 ```
 
 #### State Management Issues
@@ -863,4 +923,13 @@ export function useBusinessRules() {
 
 ---
 
-This documentation provides a comprehensive guide to understanding, developing, and extending the DayGrid codebase. For specific implementation details, refer to the source code and inline comments throughout the project.
+This documentation provides a comprehensive guide to understanding, developing, and extending the DayGrid codebase. 
+
+### Additional Resources
+- **Context File**: `/context.txt` - Quick reference for current project state
+- **Project Plans**: `/daygrid-plan.txt` and `/daygrid-ai-launch-plan.txt` - Development roadmap
+- **Component Examples**: Refer to existing components in `/src/components/main-application/` and `/src/components/public-side/`
+- **Security Implementation**: See `/src/lib/security/` for anti-cheating mechanisms
+- **Animation Examples**: Check `/src/lib/animations/` and component files for GSAP usage
+
+For specific implementation details, refer to the source code and inline comments throughout the project.

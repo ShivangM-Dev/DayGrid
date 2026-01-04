@@ -1,7 +1,7 @@
 # DayGrid - Codebase Context
 
 ## Project Overview
-DayGrid is a task management application with intelligent scheduling and priority management. The codebase has been refactored to include a public landing page and authenticated dashboard.
+DayGrid is a premium task management application with intelligent scheduling, priority management, and anti-cheating mechanisms. The codebase features a sophisticated black/silver themed public landing page with waitlist system and a comprehensive authenticated dashboard for task management.
 
 ## Architecture
 
@@ -11,87 +11,113 @@ DayGrid is a task management application with intelligent scheduling and priorit
 - **Styling**: Tailwind CSS 4
 - **UI Components**: shadcn/ui (Radix UI based)
 - **State Management**: Zustand + React Context
-- **Animations**: GSAP for landing page
+- **Animations**: GSAP for premium landing page interactions
 - **Backend**: Supabase (with mock fallback for development)
 - **Package Manager**: pnpm
+- **Form Handling**: React Hook Form + Zod validation
+- **Drag & Drop**: @dnd-kit for task scheduling
 
 ### Project Structure
 ```
 src/
 ├── app/                     # Next.js App Router pages
-│   ├── page.tsx            # Public landing page (black/silver theme)
+│   ├── page.tsx            # Public landing page (black/silver premium theme)
 │   ├── dashboard/page.tsx    # Authenticated dashboard
+│   ├── waitlist/page.tsx     # Waitlist application form
+│   ├── manifesto/page.tsx    # Product manifesto/vision page
 │   ├── auth/               # Authentication pages
 │   │   ├── login/page.tsx  # Login form
 │   │   └── signup/page.tsx # Signup form
 │   ├── layout.tsx          # Root layout with providers
 │   └── globals.css         # Global styles
 ├── components/
-│   ├── ui/                 # shadcn/ui base components
-│   ├── navigation/          # Navigation components
-│   │   ├── public-navigation.tsx    # Landing page navigation
-│   │   └── dashboard-navigation.tsx # Authenticated navigation
-│   ├── features/           # Feature-specific components
-│   │   ├── task-inbox/     # Task management UI
-│   │   ├── daily-grid/     # Time scheduling grid
-│   │   ├── day-management/ # Day state controls
-│   │   └── animations/     # UI animations
-│   └── animations/         # Landing page animations (GSAP)
+│   ├── main-application/   # Dashboard application components
+│   │   ├── task-inbox/     # Task creation and management UI
+│   │   ├── daily-grid/     # 24-hour time scheduling grid with drag & drop
+│   │   ├── day-management/ # Day state controls and statistics
+│   │   ├── animations/     # Dashboard UI animations
+│   │   └── waitlist/       # Waitlist form component
+│   ├── public-side/        # Landing page components
+│   │   ├── hero/           # Hero section with animated text
+│   │   ├── features/       # Feature showcase (6 core features)
+│   │   ├── how-it-works/   # Process explanation section
+│   │   ├── cta/            # Call-to-action sections
+│   │   ├── footer/         # Footer component
+│   │   └── layout/         # Background effects and layout utilities
+│   ├── shared/             # Shared application components
+│   │   ├── navigation/     # Public and dashboard navigation
+│   │   ├── ui/             # shadcn/ui base components
+│   │   └── animations/     # Shared animation utilities
+├── context/                # React Context providers
+│   ├── task-context.tsx    # Task state management
+│   ├── day-context.tsx     # Day state management
+│   ├── auth-context.tsx    # Authentication context
+│   └── animation-context.tsx # GSAP animation context
 ├── hooks/                  # Custom React hooks
 │   ├── use-auth.ts         # Authentication logic
 │   ├── use-tasks.ts        # Task CRUD operations
 │   ├── use-day-state.ts    # Day management logic
-│   └── use-drag-and-drop.ts # DnD functionality
+│   ├── use-drag-and-drop.ts # DnD functionality
+│   ├── use-gsap-animation.ts # Animation utilities
+│   ├── use-local-storage.ts # Local storage management
+│   └── use-security-monitoring.ts # Security and audit logging
 ├── lib/                    # Utility libraries
-│   ├── supabase/           # Supabase client configuration
-│   ├── utils.ts            # General utilities
-│   ├── validations/        # Form validation schemas
-│   └── animations/        # GSAP utilities
+│   ├── supabase/           # Supabase client configuration and types
+│   ├── validations/        # Zod form validation schemas
+│   ├── animations/         # GSAP animation utilities
+│   ├── security/           # Security, crypto, and logging
+│   └── utils.ts            # General utilities
 ├── store/                  # Zustand stores
 │   ├── task-store.ts        # Persistent task storage
 │   └── day-store.ts        # Day state persistence
 └── types/                  # TypeScript definitions
     ├── index.ts            # Barrel exports
-    ├── task.ts             # Task interfaces
-    ├── day.ts              # Day interfaces
+    ├── task.ts             # Task interfaces and enums
+    ├── day.ts              # Day state interfaces
     ├── user.ts             # User interfaces
     ├── api.ts              # API interfaces
-    └── database.ts         # Database schemas
+    ├── database.ts         # Database schemas
+    └── public-side.ts      # Landing page type definitions
 ```
 
 ## Core Features
 
 ### Landing Page (/)
-- Black and silver theme inspired by eden.so
-- Hero section with animated text
-- Features showcase (6 core features)
-- How it works section
-- Testimonials
-- Responsive navigation
-- GSAP animations for enhanced UX
+- Premium black and silver theme inspired by eden.so
+- Hero section with GSAP-animated text and effects
+- Features showcase (6 core features) with hover animations
+- How it works section with step-by-step process
+- Waitlist-focused CTA sections with success states
+- Responsive navigation with discreet admin access
+- Advanced GSAP animations and micro-interactions
+- Background effects and premium visual design
 
 ### Authentication
-- Mock authentication for development
+- Mock authentication for development (works out of the box)
 - Real Supabase integration (configure with .env.local)
-- Protected routes via middleware/proxy
-- Login/signup forms with validation
+- Protected routes via proxy middleware
+- Login/signup forms with Zod validation
+- Automatic redirects and user session management
+- Password visibility toggle and form validation
 
 ### Dashboard (/dashboard)
-- Task creation and management
-- 24-hour scheduling grid
-- Priority system (1-10 scale)
-- Task types (6 categories)
-- Day states (Planning → Active → Completed)
-- Drag and drop functionality
-- Analytics and statistics
+- Comprehensive task creation and management with form validation
+- 24-hour scheduling grid with drag-and-drop functionality
+- Priority system (1-10 scale) with exclusive high-priority enforcement
+- Task types (6 categories: regular, meeting, class, appointment, deadline, commitment)
+- Day states (Planning → Active → Completed) with immutable logging
+- Advanced drag and drop with @dnd-kit integration
+- Real-time analytics, statistics, and progress tracking
+- Anti-cheating mechanisms and security monitoring
 
 ## Business Logic
 
 ### Task System
-- **Priority Rules**: Only ONE task can have high priority (7-10)
-- **Task Types**: regular, meeting, class, appointment, deadline, commitment
-- **Scheduling**: 24-hour grid with business hours enforcement (6:00-22:00)
-- **Day States**: Planning (flexible), Active (locked), Completed (view-only)
+- **Priority Rules**: Only ONE task can have high priority (7-10) with automatic validation
+- **Task Types**: regular, meeting, class, appointment, deadline, commitment (with reschedule rules)
+- **Scheduling**: 24-hour grid with business hours enforcement (6:00-22:00) and conflict detection
+- **Day States**: Planning (flexible), Active (locked with anti-cheat), Completed (view-only with audit trail)
+- **Security**: Immutable logging, anomaly detection, and comprehensive audit trails
 
 ### Security Features
 - Immutable logging for task changes
@@ -174,9 +200,12 @@ pnpm lint       # Run ESLint
 - Maintained all premium animations and styling throughout
 
 ## Current Application State
-- **Public Landing**: Premium black/silver theme with waitlist focus
-- **Waitlist Flow**: Application form → Success confirmation → Priority access
-- **Admin Access**: Discreet "Admin" link in navigation (for testing)
-- **Protected Routes**: Dashboard and auth pages behind middleware
-- **No Testimonials**: Cleaner, more focused landing page
-- **Premium Animations**: GSAP-powered interactions and effects throughout
+- **Public Landing**: Premium black/silver theme with sophisticated animations and waitlist focus
+- **Waitlist Flow**: Application form with validation → Success confirmation → Priority access messaging
+- **Admin Access**: Discreet "Admin" link in navigation (for development/testing)
+- **Protected Routes**: Dashboard and auth pages behind proxy middleware
+- **Manifesto Page**: Product vision and philosophy documentation (/manifesto)
+- **No Testimonials**: Cleaner, more focused landing page design
+- **Premium Animations**: GSAP-powered interactions, micro-animations, and effects throughout
+- **Advanced Security**: Comprehensive anti-cheating, immutable logging, and anomaly detection
+- **Modern Stack**: Next.js 16, React 19, TypeScript 5, and latest dependencies
