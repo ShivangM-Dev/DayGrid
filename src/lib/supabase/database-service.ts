@@ -28,12 +28,77 @@ export const userService = {
     return { data, error }
   },
 
+  // Check if user profile exists (for onboarding flow)
+  async profileExists(userId: string) {
+    if (!supabase) return { exists: false, error: new Error('Supabase not configured') }
+    
+    const { data, error } = await supabaseFrom('users')
+      .select('id, name, timezone')
+      .eq('id', userId)
+      .single()
+    
+    // Check if user has completed onboarding by having more than just basic fields
+    const hasCompletedOnboarding = data && data.name && data.timezone
+    
+    return { 
+      exists: !!data, 
+      hasCompletedOnboarding: !!hasCompletedOnboarding,
+      profile: data,
+      error 
+    }
+  },
+
   // Create/update user profile
   async upsertProfile(user: any) {
     if (!supabase) return { data: null, error: new Error('Supabase not configured') }
     
     const { data, error } = await supabaseFrom('users')
       .upsert(user)
+      .select()
+      .single()
+    
+    return { data, error }
+  },
+
+  // Complete onboarding with full user profile
+  async completeOnboarding(userId: string, onboardingData: {
+    name: string;
+    timezone: string;
+    preferences: {
+      workingHours: { start: number; end: number };
+      defaultTaskDuration: number;
+      notifications: {
+        taskReminders: boolean;
+        dayStart: boolean;
+        deadlineAlerts: boolean;
+      };
+      theme: 'light' | 'dark' | 'system';
+    };
+  }) {
+    if (!supabase) return { data: null, error: new Error('Supabase not configured') }
+    
+    const userProfile = {
+      id: userId,
+      name: onboardingData.name,
+      timezone: onboardingData.timezone,
+      preferences: {
+        working_hours: {
+          start: onboardingData.preferences.workingHours.start,
+          end: onboardingData.preferences.workingHours.end
+        },
+        default_task_duration: onboardingData.preferences.defaultTaskDuration,
+        notifications: {
+          task_reminders: onboardingData.preferences.notifications.taskReminders,
+          day_start: onboardingData.preferences.notifications.dayStart,
+          deadline_alerts: onboardingData.preferences.notifications.deadlineAlerts
+        },
+        theme: onboardingData.preferences.theme
+      },
+      updated_at: new Date().toISOString()
+    }
+    
+    const { data, error } = await supabaseFrom('users')
+      .upsert(userProfile)
       .select()
       .single()
     

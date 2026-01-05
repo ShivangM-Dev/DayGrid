@@ -1,0 +1,20 @@
+{"interval":"2 hours","level":"info","message":"Database monitoring service started","nodeEnv":"development","service":"daygrid-db-monitor","timestamp":"2026-01-04T21:11:47.040Z"}
+{"host":"localhost","level":"info","message":"Health check server started","port":3001,"service":"daygrid-db-monitor","timestamp":"2026-01-04T21:11:47.049Z","url":"http://localhost:3001/health"}
+{"level":"info","message":"Performing scheduled database status check","service":"daygrid-db-monitor","timestamp":"2026-01-04T21:11:47.050Z"}
+{"connectionTime":1235,"error":null,"event":"database_status_check","isConfigured":true,"isConnected":true,"level":"info","message":"Database status check: CONNECTED","service":"daygrid-db-monitor","supabaseUrl":"https://gnseuqkchsesxzwnjaxq.supabase.co","tablesExist":true,"tasksTable":true,"timestamp":"2026-01-04T21:11:48.285Z","userTable":true}
+{"connectionTime":1235,"isConnected":true,"level":"info","message":"Database status check completed","service":"daygrid-db-monitor","tablesExist":true,"timestamp":"2026-01-04T21:11:48.286Z"}
+{"checkInterval":7200000,"healthCheckUrl":"http://localhost:3001/health","level":"info","message":"Database monitoring service started successfully","service":"daygrid-db-monitor","timestamp":"2026-01-04T21:11:48.287Z"}
+{"level":"info","message":"Database monitoring service is running. Press Ctrl+C to stop.","service":"daygrid-db-monitor","timestamp":"2026-01-04T21:11:48.287Z"}
+{"level":"info","message":"Received shutdown signal, stopping service gracefully","service":"daygrid-db-monitor","timestamp":"2026-01-04T21:11:56.459Z"}
+{"interval":"2 hours","level":"info","message":"Database monitoring service started","nodeEnv":"development","service":"daygrid-db-monitor","timestamp":"2026-01-04T21:12:00.132Z"}
+{"host":"localhost","level":"info","message":"Health check server started","port":3001,"service":"daygrid-db-monitor","timestamp":"2026-01-04T21:12:00.143Z","url":"http://localhost:3001/health"}
+{"level":"info","message":"Performing scheduled database status check","service":"daygrid-db-monitor","timestamp":"2026-01-04T21:12:00.143Z"}
+{"connectionTime":462,"error":null,"event":"database_status_check","isConfigured":true,"isConnected":true,"level":"info","message":"Database status check: CONNECTED","service":"daygrid-db-monitor","supabaseUrl":"https://gnseuqkchsesxzwnjaxq.supabase.co","tablesExist":true,"tasksTable":true,"timestamp":"2026-01-04T21:12:00.605Z","userTable":true}
+{"connectionTime":462,"isConnected":true,"level":"info","message":"Database status check completed","service":"daygrid-db-monitor","tablesExist":true,"timestamp":"2026-01-04T21:12:00.606Z"}
+{"checkInterval":7200000,"healthCheckUrl":"http://localhost:3001/health","level":"info","message":"Database monitoring service started successfully","service":"daygrid-db-monitor","timestamp":"2026-01-04T21:12:00.606Z"}
+{"level":"info","message":"Database monitoring service is running. Press Ctrl+C to stop.","service":"daygrid-db-monitor","timestamp":"2026-01-04T21:12:00.606Z"}
+{"ip":"::1","level":"info","message":"Health check request: GET /health","service":"daygrid-db-monitor","timestamp":"2026-01-04T21:12:05.856Z","userAgent":"curl/8.15.0"}
+{"isConnected":true,"level":"info","message":"Health check endpoint accessed","responseTime":820,"service":"daygrid-db-monitor","timestamp":"2026-01-04T21:12:06.677Z"}
+{"ip":"::1","level":"info","message":"Health check request: GET /info","service":"daygrid-db-monitor","timestamp":"2026-01-04T21:12:12.776Z","userAgent":"curl/8.15.0"}
+{"ip":"::1","level":"info","message":"Health check request: GET /ping","service":"daygrid-db-monitor","timestamp":"2026-01-04T21:12:15.261Z","userAgent":"curl/8.15.0"}
+{"level":"info","message":"Received shutdown signal, stopping service gracefully","service":"daygrid-db-monitor","timestamp":"2026-01-04T21:12:37.844Z"}
