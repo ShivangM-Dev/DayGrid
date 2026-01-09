@@ -132,6 +132,15 @@ export function TaskProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(taskReducer, initialState)
 
   const addTask = (taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => {
+    // Check if adding this task would violate specific priority exclusivity
+    if (taskData.priority >= 7) {
+      const existingTaskWithSamePriority = state.tasks.find(task => task.priority === taskData.priority)
+      
+      if (existingTaskWithSamePriority) {
+        throw new Error(`Only one task can have priority ${taskData.priority}`)
+      }
+    }
+
     const task: Task = {
       ...taskData,
       id: `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -142,6 +151,17 @@ export function TaskProvider({ children }: { children: ReactNode }) {
   }
 
   const updateTask = (id: string, updates: Partial<Task>) => {
+    // Check if updating priority would violate specific priority exclusivity
+    if (updates.priority !== undefined && updates.priority >= 7) {
+      const existingTaskWithSamePriority = state.tasks.find(task => 
+        task.priority === updates.priority && task.id !== id
+      )
+      
+      if (existingTaskWithSamePriority) {
+        throw new Error(`Only one task can have priority ${updates.priority}`)
+      }
+    }
+
     dispatch({ type: 'UPDATE_TASK', payload: { id, updates } })
   }
 

@@ -10,26 +10,41 @@ import { DayStatusComponent } from '@/components/main-application/day-management
 import { StartDayButton } from '@/components/main-application/day-management/start-day-button'
 import { useTasks } from '@/hooks/use-tasks'
 import { useDayState } from '@/hooks/use-day-state'
-import { useAuth } from '@/hooks/use-auth'
+import { useDashboardState } from '@/hooks/use-dashboard-state'
 import { format, startOfDay } from 'date-fns'
-import { Calendar, Clock, Target, Plus } from 'lucide-react'
+import { Calendar, Clock, Target, Plus, TrendingUp, CheckCircle, AlertCircle, BarChart3 } from 'lucide-react'
 import { DashboardNavigation } from '@/components/shared/navigation/dashboard-navigation'
+import { StatsCard } from '@/components/dashboard/stats-card'
+import { QuickActions } from '@/components/dashboard/quick-actions'
+import { DayProgress } from '@/components/dashboard/day-progress'
+import { TaskWidget } from '@/components/dashboard/task-widget'
+import { DragAndDropHelper } from '@/components/main-application/ui/drag-and-drop-helper'
+import { UnplannedDayUI } from '@/components/dashboard/states/unplanned-day-ui'
+import { PlanningDayUI } from '@/components/dashboard/states/planning-day-ui'
+import { ActiveDayUI } from '@/components/dashboard/states/active-day-ui'
 
 export default function Dashboard() {
   const { tasks, getUnscheduledTasks, getScheduledTasks } = useTasks()
-  const { state: dayState, startNewDay, activateDay } = useDayState()
-  const { isAuthenticated, user, logout } = useAuth()
-  const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const { state: dayState, startNewDay, activateDay, completeDay } = useDayState()
+  const { currentState, transitionTo, previousDayTasks, previousDayProgress } = useDashboardState()
+  const [selectedDate] = useState(format(new Date(), 'yyyy-MM-dd'))
 
   const unscheduledTasks = getUnscheduledTasks()
   const scheduledTasks = getScheduledTasks()
 
   const handleStartNewDay = () => {
     startNewDay(selectedDate)
+    transitionTo('planning')
   }
 
   const handleActivateDay = () => {
     activateDay()
+    transitionTo('active')
+  }
+
+  const handleCompleteDay = () => {
+    completeDay()
+    transitionTo('unplanned')
   }
 
   const handleTaskCreated = () => {
@@ -38,136 +53,68 @@ export default function Dashboard() {
 
 
 
+  const completionRate = tasks.length > 0 
+    ? Math.round((tasks.filter(t => t.completed).length / tasks.length) * 100)
+    : 0
+
+  const highPriorityTasks = tasks.filter(t => t.priority >= 7)
+  const todayTasks = scheduledTasks.filter(t => t.scheduledTime !== undefined)
+
+  const progressItems = [
+    {
+      label: "Tasks Completed",
+      value: tasks.filter(t => t.completed).length,
+      total: tasks.length,
+      color: "success",
+      icon: "check" as const
+    },
+    {
+      label: "Tasks Scheduled",
+      value: scheduledTasks.length,
+      total: tasks.length,
+      color: "warning",
+      icon: "clock" as const
+    },
+    {
+      label: "High Priority",
+      value: highPriorityTasks.filter(t => t.completed).length,
+      total: highPriorityTasks.length,
+      color: "danger",
+      icon: "target" as const
+    },
+    {
+      label: "Today's Progress",
+      value: todayTasks.filter(t => t.completed).length,
+      total: todayTasks.length,
+      icon: "trending" as const
+    }
+  ]
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Navigation */}
+    <div className="min-h-screen bg-background">
       <DashboardNavigation currentPage="dashboard" />
+      
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 pt-20 sm:pt-24 pb-6 sm:pb-8">
+        {/* State-based UI Rendering */}
+        {currentState === 'unplanned' && (
+          <UnplannedDayUI 
+            onPlanDay={handleStartNewDay}
+            previousDayTasks={previousDayTasks}
+            previousDayProgress={previousDayProgress}
+          />
+        )}
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          {/* Left Column - Task Management */}
-          <div className="lg:col-span-1 space-y-6">
-            
-            {/* Day Status */}
-            {dayState.currentDay && (
-              <DayStatusComponent
-                dayState={dayState.currentDay}
-                onStartDay={handleActivateDay}
-              />
-            )}
+        {currentState === 'planning' && (
+          <PlanningDayUI 
+            onStartDay={handleActivateDay}
+          />
+        )}
 
-            {/* Start Day Button */}
-            {!dayState.currentDay && (
-              <StartDayButton
-                onDayStart={handleStartNewDay}
-              />
-            )}
-
-            {/* Add Task Form */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Plus className="w-5 h-5" />
-                  Create New Task
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <TaskForm onSuccess={handleTaskCreated} />
-              </CardContent>
-            </Card>
-
-            {/* Unscheduled Tasks */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="w-5 h-5" />
-                  Unscheduled Tasks ({unscheduledTasks.length})
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {unscheduledTasks.length === 0 ? (
-                  <div className="text-center text-gray-500 py-4">
-                    All tasks are scheduled!
-                  </div>
-                ) : (
-                  unscheduledTasks.map((task) => (
-                    <TaskCard
-                      key={task.id}
-                      task={task}
-                      className="cursor-move"
-                    />
-                  ))
-                )}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Right Column - Daily Grid */}
-          <div className="lg:col-span-2">
-            <DailyGrid
-              date={selectedDate}
-              tasks={scheduledTasks}
-              className="min-h-[600px]"
-            />
-          </div>
-        </div>
-
-        {/* Statistics Summary */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Total Tasks</p>
-                  <p className="text-2xl font-bold">{tasks.length}</p>
-                </div>
-                <Target className="w-8 h-8 text-blue-600 opacity-50" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Scheduled</p>
-                  <p className="text-2xl font-bold text-green-600">{scheduledTasks.length}</p>
-                </div>
-                <Calendar className="w-8 h-8 text-green-600 opacity-50" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Unscheduled</p>
-                  <p className="text-2xl font-bold text-yellow-600">{unscheduledTasks.length}</p>
-                </div>
-                <Clock className="w-8 h-8 text-yellow-600 opacity-50" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Completed</p>
-                  <p className="text-2xl font-bold text-purple-600">
-                    {tasks.filter(t => t.completed).length}
-                  </p>
-                </div>
-                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                  <span className="text-purple-600 font-bold text-sm">✓</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        {currentState === 'active' && (
+          <ActiveDayUI 
+            onCompleteDay={handleCompleteDay}
+          />
+        )}
       </main>
     </div>
   )

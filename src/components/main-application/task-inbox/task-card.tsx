@@ -72,15 +72,26 @@ export function TaskCard({ task, onEdit, onDelete, className }: TaskCardProps) {
   return (
     <Card 
       className={cn(
-        'w-full transition-all duration-200 hover:shadow-md',
-        task.completed && 'opacity-60',
-        task.failed && 'border-red-200 bg-red-50',
-        task.abandoned && 'border-gray-200 bg-gray-50',
-        isLocked && 'opacity-80',
+        'w-full transition-all duration-300 cursor-move hover:shadow-lg hover:-translate-y-1 hover-lift',
+        task.completed && 'opacity-60 cursor-not-allowed',
+        task.failed && 'border-red-200 bg-red-50 cursor-not-allowed',
+        task.abandoned && 'border-gray-200 bg-gray-50 cursor-not-allowed',
+        isLocked && 'opacity-80 cursor-not-allowed',
+        !task.completed && !task.failed && !task.abandoned && !isLocked && 'hover:border-primary/50 hover:shadow-primary/20',
         className
       )}
     >
       <CardHeader className="pb-2">
+        {!task.completed && !task.failed && !task.abandoned && !isLocked && (
+          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <div className="bg-primary/10 border border-primary/30 rounded-full p-1">
+              <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+        )}
+        
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
@@ -107,7 +118,7 @@ export function TaskCard({ task, onEdit, onDelete, className }: TaskCardProps) {
             </span>
             {isLocked && (
               <div className="text-xs text-gray-500">
-                Locked
+                🔒 Locked
               </div>
             )}
           </div>

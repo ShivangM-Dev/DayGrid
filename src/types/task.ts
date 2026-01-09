@@ -13,7 +13,7 @@ export interface Task {
   priority: number; // 1-10 scale
   duration: number; // in hours
   type: TaskType;
-  scheduledTime?: number; // hour of day (0-23)
+  scheduledTime?: number; // hour of day in decimal (0-23.75, supports 15-minute increments)
   completed: boolean;
   failed: boolean;
   abandoned: boolean;
@@ -25,7 +25,7 @@ export interface Task {
 export interface TaskLog {
   id: string;
   taskId: string;
-  action: 'created' | 'updated' | 'completed' | 'failed' | 'abandoned' | 'scheduled' | 'rescheduled';
+  action: 'created' | 'updated' | 'completed' | 'failed' | 'abandoned' | 'scheduled' | 'rescheduled' | 'grid_cleared';
   timestamp: Date;
   previousState?: Partial<Task>;
   newState?: Partial<Task>;

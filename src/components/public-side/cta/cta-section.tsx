@@ -53,7 +53,7 @@ export function CTASection({ className }: CTASectionProps = {}) {
           <div className="flex flex-col sm:flex-row gap-8 justify-center items-center mt-20">
             <div className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-gray-900/60 to-gray-800/40 backdrop-blur-xl rounded-2xl border border-gray-700/50">
               <Shield className="w-5 h-5 mr-3 text-emerald-400" />
-              <span className="text-gray-200 font-light tracking-wide">Lifetime Access Guarantee</span>
+              <span className="text-gray-200 font-light tracking-wide">Direct Support</span>
             </div>
             <div className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-gray-900/60 to-gray-800/40 backdrop-blur-xl rounded-2xl border border-gray-700/50">
               <Award className="w-5 h-5 mr-3 text-yellow-400" />

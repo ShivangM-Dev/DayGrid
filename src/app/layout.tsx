@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/context/auth-context";
 import { TaskProvider } from "@/context/task-context";
 import { DayProvider } from "@/context/day-context";
 import { AnimationProvider } from "@/context/animation-context";
+import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/shared/ui/sonner";
 
 const geistSans = Geist({
@@ -28,20 +28,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AnimationProvider>
-          <AuthProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AnimationProvider>
             <TaskProvider>
               <DayProvider>
                 {children}
                 <Toaster />
               </DayProvider>
             </TaskProvider>
-          </AuthProvider>
-        </AnimationProvider>
+          </AnimationProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

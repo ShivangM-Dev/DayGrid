@@ -1,134 +1,240 @@
-'use client'
+"use client";
 
-import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/shared/ui/card'
-import { Task } from '@/types'
-import { useTask, useDay } from '@/hooks'
-import { TimeSlot } from './time-slot'
+import React from "react";
+import { Task } from "@/types";
+import { useTasks } from "@/hooks/use-tasks";
+import { useDayState } from "@/hooks/use-day-state";
+import { TimeSlot } from "./time-slot";
+
+import { BusinessHoursSettings } from "@/components/settings/business-hours-settings";
+import { BusinessHoursService } from "@/lib/business-hours";
+import { cn } from "@/lib/utils";
 
 interface DailyGridProps {
-  date: string
-  tasks?: Task[]
-  className?: string
+  date: string;
+  tasks?: Task[];
+  className?: string;
 }
 
 export function DailyGrid({ date, tasks = [], className }: DailyGridProps) {
-  const { scheduleTask } = useTask()
-  const { canModifySchedule } = useDay()
+  const { scheduleTask, clearGrid } = useTasks();
+  const { canModifySchedule, addTaskLog } = useDayState();
+  const [showClearConfirm, setShowClearConfirm] = React.useState(false);
+  const [businessHoursUpdated, setBusinessHoursUpdated] = React.useState(0);
 
-  const handleTaskDrop = (taskId: string, hour: number) => {
-    scheduleTask(taskId, hour)
-  }
+  const handleBusinessHoursUpdate = () => {
+    setBusinessHoursUpdated(prev => prev + 1);
+  };
+  const gridRef = React.useRef<HTMLDivElement>(null);
 
-  // Generate hours from 0 to 23 (24-hour format)
-  const hours = Array.from({ length: 24 }, (_, i) => i)
+  const handleTaskDrop = (taskId: string, timeSlot: number) => {
+    scheduleTask(taskId, timeSlot);
+  };
 
-  const getScheduledTasksForHour = (hour: number) => {
-    return tasks.filter(task => task.scheduledTime === hour)
-  }
+  const handleClearGrid = () => {
+    const scheduledTasks = tasks.filter(
+      (task) => task.scheduledTime !== undefined
+    );
+    scheduledTasks.forEach((task) => {
+      addTaskLog({
+        id: `log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        taskId: task.id,
+        action: "grid_cleared",
+        timestamp: new Date(),
+        previousState: { scheduledTime: task.scheduledTime },
+        newState: { scheduledTime: undefined },
+        hash: `${Date.now()}_${task.id}_grid_cleared`,
+      });
+    });
 
-  const getTasksForTimeRange = (startHour: number, endHour: number) => {
-    return tasks.filter(task => {
-      if (task.scheduledTime === undefined) return false
-      const taskEnd = task.scheduledTime + task.duration
-      return task.scheduledTime < endHour && taskEnd > startHour
-    })
-  }
+    clearGrid();
+    setShowClearConfirm(false);
+  };
 
-  const isOverlappingTask = (hour: number, task: Task) => {
-    if (task.scheduledTime === undefined) return false
-    const taskEnd = task.scheduledTime + task.duration
-    return hour >= task.scheduledTime && hour < taskEnd
-  }
+  const timeSlots = Array.from({ length: 96 }, (_, i) => i * 0.25);
+
+  const getScheduledTasksForTimeSlot = (timeSlot: number) => {
+    return tasks.filter((task) => {
+      if (task.scheduledTime === undefined) return false;
+      const taskEnd = task.scheduledTime + task.duration;
+      return task.scheduledTime <= timeSlot && taskEnd > timeSlot;
+    });
+  };
+
+  const isOverlappingTask = (timeSlot: number, task: Task) => {
+    if (task.scheduledTime === undefined) return false;
+    const taskEnd = task.scheduledTime + task.duration;
+    return timeSlot >= task.scheduledTime && timeSlot < taskEnd;
+  };
+
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  const getFullDate = (date: string) => {
+    return new Date(date).toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const scheduledTasksCount = tasks.filter((t) => t.scheduledTime !== undefined).length;
+  const completedTasksCount = tasks.filter((t) => t.completed).length;
 
   return (
-    <Card className={className}>
-      <CardHeader>
-        <CardTitle className="text-lg">
-          Daily Schedule - {new Date(date).toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })}
-        </CardTitle>
-        <div className="text-sm text-gray-600">
-          {canModifySchedule() ? 
-            'Planning Mode: Drag tasks to schedule them' : 
-            'Active Mode: Schedule is locked'
-          }
-        </div>
-      </CardHeader>
-      
-      <CardContent className="p-0">
-        <div className="max-h-[600px] overflow-y-auto">
-          {/* Header */}
-          <div className="sticky top-0 bg-white border-b border-gray-200 p-4 z-10">
-            <div className="flex items-center justify-between text-sm">
-              <div className="font-medium">Time</div>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-blue-100 border border-blue-300 rounded"></div>
-                  <span className="text-gray-600">Low Priority</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-yellow-100 border border-yellow-300 rounded"></div>
-                  <span className="text-gray-600">Medium Priority</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-red-100 border border-red-300 rounded"></div>
-                  <span className="text-gray-600">High Priority</span>
-                </div>
-              </div>
+    <div className={cn("h-full flex flex-col bg-background", className)}>
+      {/* Header */}
+      <div className="px-6 py-4 border-b border-border bg-background/50">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-semibold text-foreground">
+                {formatDate(date)}
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                {getFullDate(date)}
+              </p>
             </div>
           </div>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4 px-4 py-2 bg-card rounded-lg border border-border shadow-sm">
+              <div className="text-center">
+                <div className="text-lg font-bold text-foreground">{tasks.length}</div>
+                <div className="text-xs text-muted-foreground">Total</div>
+              </div>
+              <div className="w-px h-8 bg-border"></div>
+              <div className="text-center">
+                <div className="text-lg font-bold text-primary">{scheduledTasksCount}</div>
+                <div className="text-xs text-muted-foreground">Scheduled</div>
+              </div>
+              <div className="w-px h-8 bg-border"></div>
+              <div className="text-center">
+                <div className="text-lg font-bold text-success">{completedTasksCount}</div>
+                <div className="text-xs text-muted-foreground">Done</div>
+              </div>
+            </div>
+            
+            <div className={cn(
+              "px-4 py-2 rounded-lg text-sm font-medium border transition-all",
+              canModifySchedule()
+                ? "bg-primary/10 border-primary/20 text-primary"
+                : "bg-muted border-border text-muted-foreground"
+            )}>
+              {canModifySchedule() ? "📋 Planning" : "🔒 Active"}
+            </div>
 
-          {/* Time slots */}
-          <div className="divide-y divide-gray-200">
-            {hours.map((hour) => {
-              const hourTasks = getScheduledTasksForHour(hour)
-              const hasMultiHourTask = tasks.some(task => isOverlappingTask(hour, task) && task.duration > 1 && task.scheduledTime !== hour)
-              
-              return (
-                <div key={hour} className="relative">
-                  {hasMultiHourTask && (
-                    <div className="absolute inset-0 bg-gray-50 opacity-50 z-0"></div>
+            <BusinessHoursSettings 
+              onSave={handleBusinessHoursUpdate}
+              className="ml-2"
+            />
+            {canModifySchedule() && (
+              <button
+                onClick={() => setShowClearConfirm(true)}
+                className="px-3 py-2 text-sm text-destructive hover:bg-destructive/10 rounded-lg transition-all"
+              >
+                Clear Schedule
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Priority Legend */}
+      <div className="px-6 py-4 border-b border-border bg-muted/30">
+        <div className="flex items-center justify-between">
+          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            Priority Levels
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <span className="text-xs text-muted-foreground">Low</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+              <span className="text-xs text-muted-foreground">Medium</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+              <span className="text-xs text-muted-foreground">High</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Schedule Grid */}
+      <div className="h-96 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border/20 hover:scrollbar-thumb-border/40" ref={gridRef}>
+        <div className="divide-y divide-border/5">
+          {timeSlots.map((timeSlot) => {
+            const timeSlotTasks = getScheduledTasksForTimeSlot(timeSlot);
+            const hasMultiSlotTask = tasks.some(
+              (task) =>
+                isOverlappingTask(timeSlot, task) &&
+                task.duration > 0.25 &&
+                task.scheduledTime !== timeSlot
+            );
+
+            return (
+              <div 
+                key={timeSlot} 
+                className={cn(
+                  "relative group transition-colors"
+                )}
+              >
+                {hasMultiSlotTask && (
+                  <div className="absolute inset-0 bg-muted/10"></div>
+                )}
+
+                <TimeSlot
+                  hour={timeSlot}
+                  tasks={timeSlotTasks}
+                  onTaskDrop={
+                    canModifySchedule() ? handleTaskDrop : undefined
+                  }
+                  className={cn(
+                    hasMultiSlotTask ? "relative z-10" : "",
+                    "group-hover:bg-accent/5"
                   )}
-                  
-                  <TimeSlot
-                    hour={hour}
-                    tasks={hourTasks}
-                    onTaskDrop={canModifySchedule() ? handleTaskDrop : undefined}
-                    className={hasMultiHourTask ? 'relative z-10' : ''}
-                  />
-                </div>
-              )
-            })}
-          </div>
+                />
+              </div>
+            );
+          })}
+        </div>
 
-          {/* Footer with summary */}
-          <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-              <div>
-                <div className="font-medium text-gray-600">Total Tasks</div>
-                <div className="text-lg font-bold">{tasks.length}</div>
-              </div>
-              <div>
-                <div className="font-medium text-gray-600">Scheduled</div>
-                <div className="text-lg font-bold">{tasks.filter(t => t.scheduledTime !== undefined).length}</div>
-              </div>
-              <div>
-                <div className="font-medium text-gray-600">Completed</div>
-                <div className="text-lg font-bold text-green-600">{tasks.filter(t => t.completed).length}</div>
-              </div>
-              <div>
-                <div className="font-medium text-gray-600">Failed</div>
-                <div className="text-lg font-bold text-red-600">{tasks.filter(t => t.failed).length}</div>
-              </div>
+
+      </div>
+
+      {/* Clear Confirmation Modal */}
+      {showClearConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-background border border-border/20 rounded-xl p-6 max-w-md mx-4">
+            <h3 className="text-lg font-semibold mb-2">Clear Schedule?</h3>
+            <p className="text-muted-foreground mb-4">
+              This will remove all scheduled tasks from today's grid. This action cannot be undone.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowClearConfirm(false)}
+                className="px-4 py-2 text-sm border border-border/30 rounded-lg hover:bg-accent transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleClearGrid}
+                className="px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+              >
+                Clear Schedule
+              </button>
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
-  )
+      )}
+    </div>
+  );
 }

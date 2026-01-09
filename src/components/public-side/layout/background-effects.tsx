@@ -32,12 +32,7 @@ export function BackgroundEffects({ className }: BackgroundEffectsProps = {}) {
         style={{animationDuration: '4.5s', animationDelay: '1s'}}
       ></div>
       
-      {/* Enhanced Grid Lines - Increased Brightness */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-1/4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-        <div className="absolute top-2/4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-        <div className="absolute top-3/4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-      </div>
+
     </div>
   )
 }

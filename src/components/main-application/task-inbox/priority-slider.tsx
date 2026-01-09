@@ -19,7 +19,7 @@ export function PrioritySlider({ value, onChange, disabled = false, className }:
   }
 
   const getPriorityLabel = (priority: number) => {
-    if (priority >= 7) return 'High Priority (Exclusive)'
+    if (priority >= 7) return `Priority ${priority} (Exclusive)`
     if (priority >= 4) return 'Medium Priority'
     return 'Low Priority'
   }
@@ -63,7 +63,7 @@ export function PrioritySlider({ value, onChange, disabled = false, className }:
         
         {value >= 7 && (
           <div className="mt-2 p-2 bg-red-100 border border-red-200 rounded text-xs text-red-800">
-            ⚠️ <strong>Exclusive Priority:</strong> Only one task can have high priority (7-10). 
+            ⚠️ <strong>Exclusive Priority {value}:</strong> Only one task can have priority {value}. 
             This task will be locked once scheduled.
           </div>
         )}

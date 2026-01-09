@@ -19,17 +19,41 @@ export const useTaskStore = create<TaskStore>()(
     (set, get) => ({
       tasks: [],
       
-      addTask: (task) => set((state) => ({
-        tasks: [...state.tasks, task]
-      })),
+      addTask: (task) => set((state) => {
+        // Check if adding this task would violate specific priority exclusivity
+        if (task.priority >= 7) {
+          const existingTaskWithSamePriority = state.tasks.find(t => t.priority === task.priority)
+          
+          if (existingTaskWithSamePriority) {
+            throw new Error(`Only one task can have priority ${task.priority}`)
+          }
+        }
+        
+        return {
+          tasks: [...state.tasks, task]
+        }
+      }),
       
-      updateTask: (id, updates) => set((state) => ({
-        tasks: state.tasks.map(task =>
-          task.id === id 
-            ? { ...task, ...updates, updatedAt: new Date() }
-            : task
-        )
-      })),
+      updateTask: (id, updates) => set((state) => {
+        // Check if updating priority would violate specific priority exclusivity
+        if (updates.priority !== undefined && updates.priority >= 7) {
+          const existingTaskWithSamePriority = state.tasks.find(task => 
+            task.priority === updates.priority && task.id !== id
+          )
+          
+          if (existingTaskWithSamePriority) {
+            throw new Error(`Only one task can have priority ${updates.priority}`)
+          }
+        }
+        
+        return {
+          tasks: state.tasks.map(task =>
+            task.id === id 
+              ? { ...task, ...updates, updatedAt: new Date() }
+              : task
+          )
+        }
+      }),
       
       deleteTask: (id) => set((state) => ({
         tasks: state.tasks.filter(task => task.id !== id)

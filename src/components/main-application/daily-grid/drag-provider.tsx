@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext } from 'react'
-import { DndContext, DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core'
+import { DndContext, DragEndEvent, DragOverEvent, DragStartEvent, TouchSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { useTasks } from '../../../hooks/use-tasks'
 import { useDayState } from '../../../hooks/use-day-state'
 
@@ -16,6 +16,21 @@ const DragAndDropContext = createContext<DragAndDropContextType | undefined>(und
 export function DragAndDropProvider({ children }: { children: React.ReactNode }) {
   const { tasks } = useTasks()
   const { canModifySchedule, validateTimeSlot } = useDayState()
+  
+  // Enhanced sensors for better mobile and desktop support
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // 8px movement before drag starts
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250, // 250ms delay for touch
+        tolerance: 8, // 8px tolerance
+      },
+    })
+  )
 
   const handleDragStart = (event: DragStartEvent) => {
     // Optional: Handle drag start visual feedback
@@ -68,6 +83,7 @@ export function DragAndDropProvider({ children }: { children: React.ReactNode })
       }}
     >
       <DndContext
+        sensors={sensors}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}

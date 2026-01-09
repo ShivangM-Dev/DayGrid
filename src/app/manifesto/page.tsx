@@ -198,8 +198,8 @@ export default function ManifestoPage() {
                     
                     <p className="text-xl md:text-2xl text-gray-400 mb-12 leading-relaxed font-light">
                       To provide you with a tool that not only manages your tasks but 
-                      <span className="text-gray-200 font-normal"> elevates your entire relationship</span> 
-                      with time and focus.
+                      <span className="text-gray-200 font-normal"> elevates your entire relationship </span> 
+                       with time and focus.
                     </p>
                     
                     <SubtlePulse scale={1.05} duration={3}>

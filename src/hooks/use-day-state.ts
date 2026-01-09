@@ -75,6 +75,11 @@ export function useDayState() {
   const validateTimeSlot = (startTime: number, duration: number, excludeTaskId?: string): boolean => {
     if (!dayStore.currentDay) return false
     
+    // Validate 15-minute granularity
+    if (startTime % 0.25 !== 0 || duration % 0.25 !== 0) {
+      return false
+    }
+    
     const businessHoursStart = 6
     const businessHoursEnd = 22
     

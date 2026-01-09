@@ -17,7 +17,9 @@ export function formatDate(date: Date | string): string {
 export function formatTime(hour: number): string {
   const period = hour >= 12 ? 'PM' : 'AM'
   const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour
-  return `${displayHour}:00 ${period}`
+  const minutes = (hour % 1) * 60
+  const minuteStr = minutes === 0 ? '00' : minutes.toString().padStart(2, '0')
+  return `${displayHour}:${minuteStr} ${period}`
 }
 
 export function generateId(): string {
@@ -30,11 +32,11 @@ export function validateEmail(email: string): boolean {
 }
 
 export function validateHour(hour: number): boolean {
-  return Number.isInteger(hour) && hour >= 0 && hour <= 23
+  return hour >= 0 && hour <= 23.75 && hour % 0.25 === 0
 }
 
 export function validateDuration(duration: number): boolean {
-  return duration > 0 && duration <= 24 && duration % 0.5 === 0
+  return duration > 0 && duration <= 24 && duration % 0.25 === 0
 }
 
 export function validatePriority(priority: number): boolean {

@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/shared/ui
 import { Input } from '@/components/shared/ui/input'
 import { Label } from '@/components/shared/ui/label'
 import { Target, ArrowRight, ArrowLeft, Check, User, Clock, Bell, Palette } from 'lucide-react'
-import { useAuth } from '@/hooks/use-auth'
+
 
 interface OnboardingData {
   name: string;
@@ -49,11 +49,10 @@ export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   
-  const { completeOnboarding, user } = useAuth()
   const router = useRouter()
 
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({
-    name: user?.name || '',
+    name: '',
     timezone: 'UTC',
     preferences: {
       workingHours: { start: 9, end: 17 },
@@ -124,7 +123,8 @@ export default function OnboardingPage() {
     setError('')
 
     try {
-      await completeOnboarding(onboardingData)
+      // Save to local storage since no auth
+      localStorage.setItem('onboardingData', JSON.stringify(onboardingData))
       router.push('/dashboard')
     } catch {
       setError('Failed to complete onboarding. Please try again.')

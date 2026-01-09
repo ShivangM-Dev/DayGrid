@@ -64,6 +64,13 @@ export function useTasks() {
     return taskStore.getUnscheduledTasks()
   }
 
+  const clearGrid = () => {
+    const scheduledTasks = taskStore.tasks.filter(task => task.scheduledTime !== undefined)
+    scheduledTasks.forEach(task => {
+      taskStore.updateTask(task.id, { scheduledTime: undefined })
+    })
+  }
+
   return {
     tasks: taskStore.tasks,
     isLoading: false,
@@ -80,5 +87,6 @@ export function useTasks() {
     getHighPriorityTasks,
     getScheduledTasks,
     getUnscheduledTasks,
+    clearGrid,
   }
 }
