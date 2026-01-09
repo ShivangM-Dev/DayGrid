@@ -2,6 +2,7 @@
 
 import { useDayStore } from '@/store/day-store'
 import { DayState, DayStatus, Task, TaskLog } from '@/types'
+import { BusinessHoursService } from '@/lib/business-hours'
 
 export function useDayState() {
   const dayStore = useDayStore()
@@ -72,7 +73,7 @@ export function useDayState() {
     return rescheduleableTypes.includes(task.type)
   }
 
-  const validateTimeSlot = (startTime: number, duration: number, excludeTaskId?: string): boolean => {
+  const validateTimeSlot = (startTime: number, duration: number, excludeTaskId?: string, date?: string): boolean => {
     if (!dayStore.currentDay) return false
     
     // Validate 15-minute granularity
@@ -80,10 +81,23 @@ export function useDayState() {
       return false
     }
     
-    const businessHoursStart = 6
-    const businessHoursEnd = 22
+    // Use configurable business hours
+    const taskDate = date ? new Date(date) : new Date()
+    const businessHoursConfig = BusinessHoursService.getBusinessHours()
     
-    if (startTime < businessHoursStart || startTime + duration > businessHoursEnd) {
+    // Check if task time is within business hours
+    const taskEnd = startTime + duration
+    let isWithinBusinessHours = true
+    
+    // Check each quarter-hour segment of the task
+    for (let time = startTime; time < taskEnd; time += 0.25) {
+      if (!BusinessHoursService.isBusinessHour(time, taskDate)) {
+        isWithinBusinessHours = false
+        break
+      }
+    }
+    
+    if (!isWithinBusinessHours) {
       return false
     }
     

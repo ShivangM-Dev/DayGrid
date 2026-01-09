@@ -27,6 +27,14 @@ export function TaskWidget({
   const { canModifySchedule } = useDayState()
   const displayTasks = tasks.slice(0, maxItems)
 
+  const formatTime = (time: number) => {
+    const period = time >= 12 ? 'PM' : 'AM'
+    const displayHour = Math.floor(time) > 12 ? Math.floor(time) - 12 : Math.floor(time) === 0 ? 12 : Math.floor(time)
+    const minutes = (time % 1) * 60
+    const minuteStr = minutes === 0 ? '00' : minutes.toString()
+    return `${displayHour}:${minuteStr} ${period}`
+  }
+
   const handleDragStart = (e: React.DragEvent, task: Task) => {
     e.dataTransfer.setData('taskId', task.id)
     e.dataTransfer.setData('taskDuration', task.duration.toString())
@@ -181,7 +189,7 @@ export function TaskWidget({
                   </span>
                   {task.scheduledTime && (
                     <span className="text-xs text-muted-foreground">
-                      {task.scheduledTime}:00
+                      {formatTime(task.scheduledTime)}
                     </span>
                   )}
                   {draggable && !task.scheduledTime && (
@@ -259,7 +267,7 @@ export function TaskWidget({
                 <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                   <span>Duration: {task.duration}h</span>
                   {task.scheduledTime && (
-                    <span>Scheduled: {task.scheduledTime}:00</span>
+                    <span>Scheduled: {formatTime(task.scheduledTime)}</span>
                   )}
                 </div>
               </div>

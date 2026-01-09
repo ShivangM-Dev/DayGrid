@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import { Task } from "@/types";
 import { useTasks } from "@/hooks/use-tasks";
 import { useDayState } from "@/hooks/use-day-state";
@@ -27,9 +27,22 @@ export function DailyGrid({ date, tasks = [], className }: DailyGridProps) {
   };
   const gridRef = React.useRef<HTMLDivElement>(null);
 
-  const handleTaskDrop = (taskId: string, timeSlot: number) => {
+  const handleTaskDrop = React.useCallback((taskId: string, timeSlot: number) => {
     scheduleTask(taskId, timeSlot);
-  };
+  }, [scheduleTask]);
+
+  // Add custom drop event listener for mobile touch support
+  React.useEffect(() => {
+    const handleCustomDrop = (e: CustomEvent) => {
+      const { taskId, hour } = e.detail;
+      handleTaskDrop(taskId, hour);
+    };
+
+    document.addEventListener('taskDrop', handleCustomDrop as EventListener);
+    return () => {
+      document.removeEventListener('taskDrop', handleCustomDrop as EventListener);
+    };
+  }, [handleTaskDrop]);
 
   const handleClearGrid = () => {
     const scheduledTasks = tasks.filter(
@@ -51,21 +64,21 @@ export function DailyGrid({ date, tasks = [], className }: DailyGridProps) {
     setShowClearConfirm(false);
   };
 
-  const timeSlots = Array.from({ length: 96 }, (_, i) => i * 0.25);
+  const timeSlots = useMemo(() => Array.from({ length: 96 }, (_, i) => i * 0.25), []);
 
-  const getScheduledTasksForTimeSlot = (timeSlot: number) => {
+  const getScheduledTasksForTimeSlot = useCallback((timeSlot: number) => {
     return tasks.filter((task) => {
       if (task.scheduledTime === undefined) return false;
       const taskEnd = task.scheduledTime + task.duration;
       return task.scheduledTime <= timeSlot && taskEnd > timeSlot;
     });
-  };
+  }, [tasks]);
 
-  const isOverlappingTask = (timeSlot: number, task: Task) => {
+  const isOverlappingTask = useCallback((timeSlot: number, task: Task) => {
     if (task.scheduledTime === undefined) return false;
     const taskEnd = task.scheduledTime + task.duration;
     return timeSlot >= task.scheduledTime && timeSlot < taskEnd;
-  };
+  }, []);
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("en-US", {
@@ -197,6 +210,7 @@ export function DailyGrid({ date, tasks = [], className }: DailyGridProps) {
                   onTaskDrop={
                     canModifySchedule() ? handleTaskDrop : undefined
                   }
+                  date={date}
                   className={cn(
                     hasMultiSlotTask ? "relative z-10" : "",
                     "group-hover:bg-accent/5"
@@ -206,8 +220,6 @@ export function DailyGrid({ date, tasks = [], className }: DailyGridProps) {
             );
           })}
         </div>
-
-
       </div>
 
       {/* Clear Confirmation Modal */}

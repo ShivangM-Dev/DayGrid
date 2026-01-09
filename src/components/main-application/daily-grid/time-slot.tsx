@@ -4,6 +4,7 @@ import React, { useRef, useEffect } from 'react'
 import { Card, CardContent } from '@/components/shared/ui/card'
 import { Task } from '@/types'
 import { useTask, useDay, useAnimation } from '@/hooks'
+import { BusinessHoursService } from '@/lib/business-hours'
 import { cn } from '@/lib/utils'
 
 interface TimeSlotProps {
@@ -11,17 +12,20 @@ interface TimeSlotProps {
   tasks: Task[]
   onTaskDrop?: (taskId: string, hour: number) => void
   className?: string
+  date?: string
 }
 
-export function TimeSlot({ hour, tasks, onTaskDrop, className }: TimeSlotProps) {
+export const TimeSlot = React.memo(function TimeSlot({ hour, tasks, onTaskDrop, className, date }: TimeSlotProps) {
   const { validateTimeSlot, canModifySchedule } = useDay()
   const slotRef = useRef<HTMLDivElement>(null)
   const [isDragOver, setIsDragOver] = React.useState(false)
 
-  const formatHour = (hour: number) => {
+const formatHour = (hour: number) => {
     const period = hour >= 12 ? 'PM' : 'AM'
-    const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour
-    return `${displayHour}:00 ${period}`
+    const displayHour = Math.floor(hour) > 12 ? Math.floor(hour) - 12 : Math.floor(hour) === 0 ? 12 : Math.floor(hour)
+    const minutes = (hour % 1) * 60
+    const minuteStr = minutes === 0 ? '00' : minutes.toString()
+    return `${displayHour}:${minuteStr} ${period}`
   }
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -46,30 +50,32 @@ export function TimeSlot({ hour, tasks, onTaskDrop, className }: TimeSlotProps) 
     const taskId = e.dataTransfer.getData('taskId')
     const taskDuration = parseFloat(e.dataTransfer.getData('taskDuration') || '1')
     
-    if (!taskId) return
+if (!taskId) return
 
     // Validate if task can be scheduled at this time
-    const canSchedule = validateTimeSlot(hour, taskDuration, taskId)
+    const canSchedule = validateTimeSlot(hour, taskDuration, taskId, date)
     
     if (canSchedule) {
       onTaskDrop(taskId, hour)
     }
   }
 
-  const isBusinessHour = hour >= 6 && hour < 22
+  const taskDate = date ? new Date(date) : new Date()
+  const isBusinessHour = BusinessHoursService.isBusinessHour(hour, taskDate)
   const slotTasks = tasks.filter(task => task.scheduledTime === hour)
   const isAvailable = isBusinessHour && slotTasks.length === 0
 
-  return (
+return (
     <div 
       ref={slotRef}
       className={cn(
         'border-b border-l border-r border-border min-h-[60px] relative transition-colors duration-200',
         !isBusinessHour && 'bg-muted opacity-50',
         isDragOver && isAvailable && 'bg-primary/10 border-primary',
-        !isBusinessHour && 'bg-muted',
         className
       )}
+      data-time-slot="true"
+      data-hour={hour.toString()}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -129,11 +135,11 @@ export function TimeSlot({ hour, tasks, onTaskDrop, className }: TimeSlotProps) 
       {/* Drag over overlay */}
       {isDragOver && isAvailable && (
         <div className="absolute inset-0 bg-primary/10 pointer-events-none flex items-center justify-center">
-          <div className="bg-primary text-primary-foreground px-3 py-1 rounded-md text-xs font-medium animate-pulse">
+<div className="bg-primary text-primary-foreground px-3 py-1 rounded-md text-xs font-medium animate-pulse">
             Drop task
           </div>
         </div>
       )}
     </div>
   )
-}
+})
