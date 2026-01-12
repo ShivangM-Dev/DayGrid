@@ -33,9 +33,9 @@ export function WaitlistForm({ onSubmit, isLoading = false }: WaitlistFormProps)
   return (
     <div className="bg-gradient-to-r from-gray-900/40 to-gray-800/20 backdrop-blur-2xl rounded-3xl p-6 border border-gray-800/50 shadow-2xl">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name" className="text-gray-300 text-sm font-light tracking-wide">
+        <div className="space-y-10">
+          <div className="space-y-10">
+            <Label htmlFor="name" className="text-gray-300 text-xl  space-y-10  font-light tracking-wide">
               Name
             </Label>
             <Input
@@ -52,7 +52,7 @@ export function WaitlistForm({ onSubmit, isLoading = false }: WaitlistFormProps)
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-gray-300 text-sm font-light tracking-wide">
+            <Label htmlFor="email" className="text-gray-300 text-xl font-light tracking-wide">
               Email
             </Label>
             <Input

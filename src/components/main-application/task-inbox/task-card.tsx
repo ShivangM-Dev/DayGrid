@@ -40,7 +40,7 @@ const priorityColors = {
 }
 
 export function TaskCard({ task, onEdit, onDelete, className }: TaskCardProps) {
-  const { completeTask, failTask, abandonTask } = useTask()
+  const { completeTask, failTask, abandonTask, deleteTask } = useTask()
   const { canModifySchedule } = useDay()
 
   const getPriorityColor = (priority: number) => {
@@ -67,6 +67,14 @@ export function TaskCard({ task, onEdit, onDelete, className }: TaskCardProps) {
     abandonTask(task.id)
   }
 
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete(task.id)
+    } else {
+      deleteTask(task.id)
+    }
+  }
+
   const isLocked = task.isLocked || !canModifySchedule()
 
   return (
@@ -83,7 +91,15 @@ export function TaskCard({ task, onEdit, onDelete, className }: TaskCardProps) {
     >
       <CardHeader className="pb-2">
         {!task.completed && !task.failed && !task.abandoned && !isLocked && (
-          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <button
+              onClick={handleDelete}
+              className="bg-destructive/10 border border-destructive/30 rounded-full p-1 text-destructive hover:bg-destructive/20 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
             <div className="bg-primary/10 border border-primary/30 rounded-full p-1">
               <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
@@ -186,6 +202,14 @@ export function TaskCard({ task, onEdit, onDelete, className }: TaskCardProps) {
                 className="h-7 px-2 text-xs border-gray-600 text-gray-400 hover:bg-gray-800/50 hover:text-gray-200 hover:border-gray-500"
               >
                 Abandon
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleDelete}
+                className="h-7 px-2 text-xs border-destructive/60 text-destructive hover:bg-destructive/10 hover:text-destructive-foreground"
+              >
+                Delete
               </Button>
             </div>
           )}

@@ -436,6 +436,10 @@
   }
 }
 
+.dark .animate-pulse-glow {
+  animation: pulse-glow-dark 3s ease-in-out infinite;
+}
+
 @keyframes float-dark {
   0%, 100% {
     transform: translateY(0px);

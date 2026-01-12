@@ -152,7 +152,7 @@ export default function OnboardingPage() {
                 <div className="flex items-start space-x-3">
                   <Check className="w-5 h-5 text-green-500 mt-0.5" />
                   <div>
-                    <p className="text-white font-medium">Smart Task Management</p>
+                    <p className="text-white font-medium">Efficient Task Management</p>
                     <p className="text-gray-400 text-sm">Organize and track your daily tasks efficiently</p>
                   </div>
                 </div>

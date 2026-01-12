@@ -23,9 +23,9 @@ export function HeroSection({ className }: HeroSectionProps = {}) {
         <AnimatedText delay={0.3}>
           <div className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-gray-900/40 to-gray-800/20 backdrop-blur-2xl rounded-full text-sm text-gray-300 mb-16 border border-gray-800/50 shadow-2xl">
             <Sparkles className="w-4 h-4 mr-3 text-gray-200" style={{animationDuration: '4s'}} />
-            <span className="font-light tracking-wide">Intelligent Daily Management</span>
+            <span className="font-light tracking-wide">Advanced Daily Management</span>
             <span className="mx-3 text-gray-600">•</span>
-            <span className="text-gray-400">AI-Enhanced Scheduling</span>
+            <span className="text-gray-400">Professional Scheduling</span>
           </div>
         </AnimatedText>
         

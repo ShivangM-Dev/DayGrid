@@ -25,7 +25,7 @@ export interface Task {
 export interface TaskLog {
   id: string;
   taskId: string;
-  action: 'created' | 'updated' | 'completed' | 'failed' | 'abandoned' | 'scheduled' | 'rescheduled' | 'grid_cleared';
+  action: 'created' | 'updated' | 'completed' | 'failed' | 'abandoned' | 'scheduled' | 'rescheduled' | 'grid_cleared' | 'task_removed';
   timestamp: Date;
   previousState?: Partial<Task>;
   newState?: Partial<Task>;

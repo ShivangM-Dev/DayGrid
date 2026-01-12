@@ -17,6 +17,8 @@ export const supabaseServer = isSupabaseConfigured
     })
   : null
 
+export { createClient }
+
 // Alternative: For cookie-based server auth (if needed in the future)
 export async function createSupabaseServer() {
   if (!isSupabaseConfigured) return null

@@ -201,6 +201,35 @@ export interface Database {
           created_at?: string
         }
       }
+      waitlist: {
+        Row: {
+          id: string
+          name: string
+          email: string
+          referral_source: string | null
+          status: 'pending' | 'accepted' | 'rejected'
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          email: string
+          referral_source?: string | null
+          status?: 'pending' | 'accepted' | 'rejected'
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          email?: string
+          referral_source?: string | null
+          status?: 'pending' | 'accepted' | 'rejected'
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never

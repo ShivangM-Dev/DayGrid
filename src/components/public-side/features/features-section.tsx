@@ -20,9 +20,9 @@ export function FeaturesSection({ className }: FeaturesSectionProps = {}) {
   const leftFeatures: Feature[] = [
     {
       icon: Calendar,
-      title: "Intelligent Scheduling",
-      description: "Smart task placement with business hours awareness and conflict prevention. Your time, perfectly optimized.",
-      tags: ["Automated", "Smart Intelligence"]
+      title: "Advanced Scheduling",
+      description: "Optimized task placement with business hours awareness and conflict prevention. Your time, perfectly organized.",
+      tags: ["Streamlined", "Efficient"]
     },
     {
       icon: Clock,
@@ -41,7 +41,7 @@ export function FeaturesSection({ className }: FeaturesSectionProps = {}) {
   const rightFeatures: Feature[] = [
     {
       icon: Target,
-      title: "Priority Intelligence",
+      title: "Priority Focus",
       description: "Exclusive high-priority system ensures focus on what truly matters. Eliminate decision paralysis.",
       tags: ["Focus", "Amplifier"]
     },
@@ -49,7 +49,7 @@ export function FeaturesSection({ className }: FeaturesSectionProps = {}) {
       icon: CheckCircle,
       title: "Task Taxonomy",
       description: "Six distinct categories from meetings to deadlines. Organize work the way you naturally think about it.",
-      tags: ["Smart", "Organization"]
+      tags: ["Intuitive", "Organization"]
     },
     {
       icon: BarChart3,

@@ -1,65 +1,99 @@
 #!/usr/bin/env node
 
-import 'dotenv/config';
-import { readFileSync, existsSync } from 'fs';
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env' });
+
+import dns from 'dns';
+dns.setDefaultResultOrder('ipv4first');
+
+import { readdirSync, readFileSync } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { Pool } from 'pg';
 
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL is missing');
+}
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const MIGRATIONS_DIR = path.join(__dirname, 'migrations');
+
 async function migrate() {
-  if (!process.env.DATABASE_URL) {
-    throw new Error('DATABASE_URL is missing');
-  }
-
-  const schemaPath = './schema.sql';
-
-  if (!existsSync(schemaPath)) {
-    throw new Error('schema.sql not found');
-  }
-
-  const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false },
-  });
+  const client = await pool.connect();
 
   try {
-    // ensure migrations table
-    await pool.query(`
+    console.log('🚀 Running migrations…');
+
+    // 1️⃣ Ensure migrations table
+    await client.query(`
       CREATE TABLE IF NOT EXISTS migrations (
-        id VARCHAR(255) PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        executed_at TIMESTAMPTZ DEFAULT NOW()
+        id TEXT PRIMARY KEY,
+        executed_at TIMESTAMPTZ DEFAULT now()
       );
     `);
 
-    // check if already applied
-    const { rows } = await pool.query(
-      `SELECT 1 FROM migrations WHERE id = '001_initial'`
+    // 2️⃣ Get already applied migrations
+    const { rows } = await client.query<{ id: string }>(
+      `SELECT id FROM migrations`
     );
+    const applied = new Set(rows.map(r => r.id));
 
-    if (rows.length > 0) {
-      console.log('✅ Initial schema already applied');
+    // 3️⃣ Read migration files
+    const files = readdirSync(MIGRATIONS_DIR)
+      .filter(f => f.endsWith('.sql'))
+      .sort(); // filename order is migration order
+
+    if (files.length === 0) {
+      console.log('⚠️  No migrations found');
       return;
     }
 
-    // read + execute schema
-    const sql = readFileSync(schemaPath, 'utf8');
+    // 4️⃣ Apply pending migrations
+    for (const file of files) {
+      if (applied.has(file)) {
+        console.log(`↪️  Skipping ${file}`);
+        continue;
+      }
 
-    await pool.query(sql);
+      console.log(`➡️  Applying ${file}`);
 
-    // record migration
-    await pool.query(
-      `INSERT INTO migrations (id, name) VALUES ($1, $2)`,
-      ['001_initial', 'Initial Schema']
-    );
+      const sql = readFileSync(
+        path.join(MIGRATIONS_DIR, file),
+        'utf8'
+      );
 
-    console.log('✅ Database migrated successfully');
+      await client.query('BEGIN');
+      try {
+        await client.query(sql);
+        await client.query(
+          `INSERT INTO migrations (id) VALUES ($1)`,
+          [file]
+        );
+        await client.query('COMMIT');
+        console.log(`✅ Applied ${file}`);
+      } catch (err) {
+        await client.query('ROLLBACK');
+        console.error(`❌ Failed ${file}`);
+        throw err;
+      }
+    }
+
+    console.log('🎉 All migrations complete');
   } finally {
+    client.release();
     await pool.end();
   }
 }
 
-// run immediately (ESM-safe)
 migrate().catch(err => {
-  console.error('❌ Migration failed');
+  console.error('❌ Migration process failed');
   console.error(err);
   process.exit(1);
 });

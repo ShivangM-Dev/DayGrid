@@ -10,15 +10,44 @@ import {
 } from '@/components/shared/animations/landing-animations'
 import { WaitlistForm } from '@/components/main-application/waitlist/waitlist-form'
 import { BackgroundEffects } from '@/components/public-side/layout/background-effects'
+import { z } from 'zod'
+
+const waitlistSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Please enter a valid email address'),
+})
+
+type WaitlistFormData = z.infer<typeof waitlistSchema>
 
 export default function WaitlistPage() {
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
-  const handleFormSubmit = async (_data: unknown) => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    setIsSubmitted(true)
-    return Promise.resolve()
+  const handleFormSubmit = async (data: WaitlistFormData) => {
+    setSubmitError(null)
+    try {
+      const response = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        if (response.status === 409) {
+          throw new Error('This email is already on our waitlist')
+        }
+        throw new Error(result.error || 'Failed to join waitlist')
+      }
+
+      setIsSubmitted(true)
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'An error occurred')
+      throw error
+    }
   }
 
   if (isSubmitted) {
@@ -101,12 +130,18 @@ export default function WaitlistPage() {
           <AnimatedText delay={0.7}>
             <p className="text-lg md:text-xl text-gray-400 mb-8 leading-relaxed font-light">
               Be among <span className="text-gray-200 font-light">first</span> to experience 
-              <span className="text-gray-100 font-light">future</span> of productivity.
+              <span className="text-gray-100 font-light"> future</span> of productivity.
             </p>
           </AnimatedText>
           
           <AnimatedText delay={0.9}>
             <div className="space-y-6">
+              {submitError && (
+                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 text-center">
+                  <p className="text-red-400 text-sm font-light">{submitError}</p>
+                </div>
+              )}
+              
               <WaitlistForm onSubmit={handleFormSubmit} />
               
               <div className="text-center">

@@ -17,7 +17,7 @@ interface DailyGridProps {
 }
 
 export function DailyGrid({ date, tasks = [], className }: DailyGridProps) {
-  const { scheduleTask, clearGrid } = useTasks();
+  const { scheduleTask, clearGrid, updateTask } = useTasks();
   const { canModifySchedule, addTaskLog } = useDayState();
   const [showClearConfirm, setShowClearConfirm] = React.useState(false);
   const [businessHoursUpdated, setBusinessHoursUpdated] = React.useState(0);
@@ -30,6 +30,20 @@ export function DailyGrid({ date, tasks = [], className }: DailyGridProps) {
   const handleTaskDrop = React.useCallback((taskId: string, timeSlot: number) => {
     scheduleTask(taskId, timeSlot);
   }, [scheduleTask]);
+
+  const handleTaskRemove = React.useCallback((taskId: string) => {
+    // Update task to unschedule it instead of deleting it
+    updateTask(taskId, { scheduledTime: undefined });
+    addTaskLog({
+      id: `log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      taskId: taskId,
+      action: "task_removed",
+      timestamp: new Date(),
+      previousState: { scheduledTime: tasks.find(t => t.id === taskId)?.scheduledTime },
+      newState: { scheduledTime: undefined },
+      hash: `${Date.now()}_${taskId}_task_removed`,
+    });
+  }, [updateTask, addTaskLog, tasks]);
 
   // Add custom drop event listener for mobile touch support
   React.useEffect(() => {
@@ -209,6 +223,9 @@ export function DailyGrid({ date, tasks = [], className }: DailyGridProps) {
                   tasks={timeSlotTasks}
                   onTaskDrop={
                     canModifySchedule() ? handleTaskDrop : undefined
+                  }
+                  onTaskRemove={
+                    canModifySchedule() ? handleTaskRemove : undefined
                   }
                   date={date}
                   className={cn(

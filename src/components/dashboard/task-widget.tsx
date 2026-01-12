@@ -6,7 +6,7 @@ import { Task, TaskType } from '@/types'
 import { Clock, Calendar, AlertCircle, CheckCircle2, Circle, GripVertical } from 'lucide-react'
 import { format } from 'date-fns'
 import { useDayState } from '@/hooks/use-day-state'
-
+   
 interface TaskWidgetProps {
   tasks: Task[]
   title?: string

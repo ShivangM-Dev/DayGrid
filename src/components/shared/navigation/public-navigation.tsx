@@ -80,9 +80,6 @@ export function PublicNavigation({ currentPath = '/' }: PublicNavigationProps) {
 
             {/* CTA - Right */}
             <div className="flex items-center space-x-4 ml-auto">
-              <Link href="/auth/login" className="text-gray-600 hover:text-gray-400 text-sm font-light tracking-widest uppercase transition-all duration-300 opacity-60 hover:opacity-100">
-                Admin
-              </Link>
               <Link href="/waitlist">
                 <Button className="bg-gradient-to-r from-gray-100 to-gray-300 text-black hover:from-gray-200 hover:to-gray-400 text-base font-medium px-8 py-3 rounded-xl shadow-xl hover:shadow-gray-300/25 transition-all duration-300 tracking-wide">
                   Join Waitlist
@@ -135,9 +132,6 @@ export function PublicNavigation({ currentPath = '/' }: PublicNavigationProps) {
 
             {/* CTA - Right */}
             <div className="flex items-center space-x-3 transition-all duration-300 opacity-90 relative z-10">
-              <Link href="/auth/login" className="text-gray-400 hover:text-gray-300 text-xs font-light tracking-widest uppercase transition-all duration-300 opacity-60 hover:opacity-100">
-                Admin
-              </Link>
               <Link href="/waitlist">
                 <Button className="bg-gradient-to-r from-gray-100 to-gray-300 text-black hover:from-gray-200 hover:to-gray-400 text-xs px-4 py-2 rounded-lg shadow-md hover:shadow-gray-300/20 transition-all duration-300 tracking-wide">
                   Join Waitlist
@@ -174,10 +168,7 @@ export function PublicNavigation({ currentPath = '/' }: PublicNavigationProps) {
                 Manifesto
               </Link>
             <div className="border-t border-gray-700 pt-4">
-              <Link href="/auth/login" className="block text-gray-600 hover:text-gray-400 text-xs font-light tracking-widest uppercase transition-colors duration-300">
-                Admin
-              </Link>
-              <Link href="/waitlist" className="block pt-3">
+              <Link href="/waitlist" className="block">
                 <Button className="w-full bg-gradient-to-r from-gray-100 to-gray-300 text-black hover:from-gray-200 hover:to-gray-400 text-sm font-medium py-3 rounded-xl shadow-xl">
                   Join Waitlist
                 </Button>

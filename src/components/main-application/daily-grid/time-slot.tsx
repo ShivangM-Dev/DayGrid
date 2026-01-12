@@ -11,11 +11,12 @@ interface TimeSlotProps {
   hour: number
   tasks: Task[]
   onTaskDrop?: (taskId: string, hour: number) => void
+  onTaskRemove?: (taskId: string) => void
   className?: string
   date?: string
 }
 
-export const TimeSlot = React.memo(function TimeSlot({ hour, tasks, onTaskDrop, className, date }: TimeSlotProps) {
+export const TimeSlot = React.memo(function TimeSlot({ hour, tasks, onTaskDrop, onTaskRemove, className, date }: TimeSlotProps) {
   const { validateTimeSlot, canModifySchedule } = useDay()
   const slotRef = useRef<HTMLDivElement>(null)
   const [isDragOver, setIsDragOver] = React.useState(false)
@@ -92,7 +93,7 @@ return (
           >
             <div 
               className={cn(
-                'p-2 rounded text-xs font-medium border cursor-move transition-all duration-200 hover:shadow-sm',
+                'p-2 rounded text-xs font-medium border cursor-move transition-all duration-200 hover:shadow-sm group',
                 task.completed && 'opacity-60 line-through bg-muted border-muted-foreground/50 text-muted-foreground',
                 task.failed && 'bg-destructive/10 border-destructive/30 text-destructive',
                 task.abandoned && 'bg-muted border-muted-foreground/50 text-muted-foreground',
@@ -108,7 +109,22 @@ return (
             >
               <div className="flex items-center justify-between">
                 <span className="truncate flex-1">{task.title}</span>
-                <span className="text-xs opacity-70 ml-2">P{task.priority}</span>
+                <div className="flex items-center gap-1">
+                  <span className="text-xs opacity-70">P{task.priority}</span>
+                  {canModifySchedule() && !task.completed && !task.failed && !task.abandoned && onTaskRemove && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onTaskRemove(task.id)
+                      }}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-0.5 hover:bg-destructive/20 rounded text-destructive hover:text-destructive-foreground"
+                    >
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
               </div>
               {task.duration > 1 && (
                 <div className="text-xs opacity-60 mt-1">

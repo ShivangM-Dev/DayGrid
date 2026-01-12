@@ -3,7 +3,7 @@ import 'dotenv/config';
 import { readFileSync, existsSync } from 'fs';
 import { Pool } from 'pg';
 async function migrate() {
-    if (!process.env.DATABASE_URL) {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
         throw new Error('DATABASE_URL is missing');
     }
     const schemaPath = './schema.sql';
@@ -11,7 +11,7 @@ async function migrate() {
         throw new Error('schema.sql not found');
     }
     const pool = new Pool({
-        connectionString: process.env.DATABASE_URL,
+        connectionString: process.env.NEXT_PUBLIC_SUPABASE_URL,
         ssl: { rejectUnauthorized: false },
     });
     try {

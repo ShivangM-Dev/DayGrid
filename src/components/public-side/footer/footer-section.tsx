@@ -47,7 +47,7 @@ export function FooterSection({ className }: FooterSectionProps = {}) {
               <span className="text-2xl font-light tracking-tight text-white">DayGrid</span>
             </div>
             <p className="text-gray-500 text-sm font-light leading-relaxed">
-              Elevate your daily workflow with intelligent task management designed for excellence.
+              Elevate your daily workflow with advanced task management designed for excellence.
             </p>
           </div>
           
